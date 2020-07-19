@@ -42,7 +42,7 @@ type T struct {
     行寬：Go 沒有行寬限制，不用擔心你的程式碼太長。如果你真的覺得它太長了，可以換行並縮排它。
     括號：Go 需要的括號遠比 C++ / Java 來得少：流程控制敘述 (if, for, switch) 沒有小括號。運算子之間的優先順序也會以排版的方式突顯。比如
 
-```
+``` go  
 x<<8 + y<<16
 ```
 
@@ -56,6 +56,7 @@ Go 提供的 C 風格的區塊註解 /* */ 以及 C++ 風格的行內註解 //�
 
 每個套件都應該要有一份套件說明，也就是在 package 語法上方的區塊註解。如果套件裡有多個源碼檔案，註解可以寫在其中任何一個檔案裡。套件說明應該是整體性的說明，或是提供整個套件的通用資訊。套件說明在 [godoc] 產生出來的文件裡會在頁面的最上方，所以你應該寫詳細點，像是這樣：
 
+``` go  
 /*
 Package regexp implements a simple library for regular expressions.
 
@@ -76,79 +77,91 @@ The syntax of the regular expressions accepted is:
         '(' regexp ')'
 */
 package regexp
+```
 
 如果套件很簡單，說明當然也可以簡短些：
 
-// Package path implements utility routines for
-// manipulating slash-separated filename paths.
+``` go  
+// Package path implements utility routines for  
+// manipulating slash-separated filename paths.  
+```
 
-註解不需要用星號一類的字元做出框框，因為產生出來的文件不一定會用固定寬度的文字來呈現，所以不要用空白一類的方式來排版，[godoc] 會幫你處理排版問題。註解應該是純文字，避免使用像 HTML 或是其他標記方式。[godoc] 的其中一種排版方式，是把縮排後的文字用固定寬度文字顯示，方便你在說明中嵌入範例程式碼。fmt 套件 的說明是個好例子。
+註解不需要用星號一類的字元做出框框，因為產生出來的文件不一定會用固定寬度的文字來呈現，所以不要用空白一類的方式來排版，[godoc], 像 [gofmt] 會幫你處理排版問題。
+
+註解應該是純文字，避免使用像 HTML 或是其他像 __this__ 這類的標記方式，因為它會被原字重複。[godoc] 的其中一種排版方式，是把縮排後的文字用固定寬度文字顯示，方便你在說明中嵌入範例程式碼。[fmt 套件](https://golang.org/pkg/fmt/) 的說明是個值得學習的好例子。
 
 某些情況下 [godoc] 也許完全不會重新排版，所以你應該讓你的註解容易閱讀：不要寫錯別字、正確使用標點符號、在適當的地方斷句等等。
 
 套件裡每個最外層的宣告語句，其上方的註解都會被當成是說明文件。每個公開的識別名稱 (exported，就是首字大寫的名稱) 都應該要有一份說明。
 
-說明文件應該要是完整的句子，第一句應該是簡略的說明，並且以宣告語句所宣告的識別名稱做為開頭。
+說明文件應該要是完整的句子，而且應該具備『自我表達』的功用。第一句應該是簡略的說明，並且以宣告語句所宣告的識別名稱做為開頭。
 
-// Compile parses a regular expression and returns, if successful, a Regexp
-// object that can be used to match against text.
-func Compile(str string) (regexp *Regexp, err error) {
-
-這樣的設計是為了方便你使用 grep 來搜尋用 [godoc] 產生出來的文件。假設你忘記 regexp 套件中某個函式的名稱，但你記得這個函式會分析 (parse) 正則式，你可能會這樣子搜尋文件：
-
+``` go  
+// Compile parses a regular expression and returns, if successful, a Regexp  
+// object that can be used to match against text.  
+func Compile(str string) (regexp *Regexp, err error) {  
 ```
-godoc regexp | grep parse
+
+如果每個文檔註釋都以其描述的項目名稱開頭，則可以使用go工具的doc子命令並通過grep運行輸出。 想像一下，您忘記了名稱“ Compile”，但在尋找正則表達式的解析函數，因此您運行了該命令，
+
+``` shell  
+$ go doc -all regexp | grep -i parse  
 ```
 
 如果你的說明文件寫「這個函式是用來…」，顯然你不會因此想起函式名稱來。但如果你把名稱寫在說明文件的開頭，那你就會知道可能是 Compile 函式：
 
+``` shell  
+$ go doc -all regexp | grep -i parse  
+    Compile parses a regular expression and returns, if successful, a Regexp  
+    MustCompile is like Compile but panics if the expression cannot be parsed.  
+    parsed. It simplifies safe initialization of global variables holding  
+$  
 ```
-$ godoc regexp | grep parse
-    Compile parses a regular expression and returns, if successful, a Regexp
-    parsed. It simplifies safe initialization of global variables holding
-    cannot be parsed. It simplifies safe initialization of global variables
-$
+
+Go的聲明語法允許對聲明進行分組。 單個文檔註釋可以引入一組相關的常量或變量。 由於整個聲明都已提出，因此這樣的註解常常是敷衍了事。
+
+``` go  
+// Error codes returned by failures to parse an expression.  
+var (  
+    ErrInternal      = errors.New("regexp: internal error")  
+    ErrUnmatchedLpar = errors.New("regexp: unmatched '('")  
+    ErrUnmatchedRpar = errors.New("regexp: unmatched ')'")  
+)  
 ```
 
-Go 的宣告語法允許把同質性的宣告包成一個群組，所以你可以在群組上方加一段註解來進行整體性的說明。
+群組還可以指示項目之間的關係，例如一組變量受互斥鎖保護的事實:  
 
-``` go
-// Error codes returned by failures to parse an expression.
-var (
-    ErrInternal      = errors.New("regexp: internal error")
-    ErrUnmatchedLpar = errors.New("regexp: unmatched '('")
-    ErrUnmatchedRpar = errors.New("regexp: unmatched ')'")
-)
-...
+``` go  
+var (  
+    countLock   sync.Mutex  
+    inputCount  uint32  
+    outputCount uint32  
+    errorCount  uint32  
+)  
+```
 
-群組宣告也可以用來表示變數之間有某種關聯，比如某些被同步鎖保護的變數：
-
-... go
-var (
-    countLock   sync.Mutex
-    inputCount  uint32
-    outputCount uint32
-    errorCount  uint32
-)
-...
-
-命名規則
+# 命名規則
 
 就像在其他語言一樣，命名規則對 Go 語言來說是十分重要的。更進一步地，它還有語意上的效果：一個變數、常數、函式是否能被其他套件的程式碼取用，端看它的名稱是否是以大寫字母開頭。所以命名規則實在值得我們花點篇幅好好介紹一番。
-套件命名
+
+## 套件命名
 
 當你引用 (import) 某個套件之後，它的名稱便成為你存取相關資源的憑據。比如你
 
-import "bytes"
+``` go  
+import "bytes"  
+```
 
 之後，就可以用 bytes.Buffer 來存取 bytes 套件中定義的 Buffer。如果每個人都可以用相同的名字來存取相同的套件內容，事情就會簡單許多；這代表了套件的名字要取的簡潔有力。慣例上，套件名稱應該是小寫的單字，避免使用底線或大小寫混雜。考慮到大家都會在程式碼中一再輸入各種名稱，像是 Err 這樣夠簡短，又能讓人一眼看出來的名稱會更好。套件名稱只是引用時的預設名稱，所以不用擔心會和其他套件撞名，也不需要強制在每個源碼檔中使用相同的名稱。如果真的發生撞名的情況，你完全可以在引用的時候指定一個別名給它。通常你不會因此搞混，因為引用時的完整套件名稱讓你可以確定自己是引用了什麼。
 
 另一個慣例是我們會用原始碼的目錄作為套件名稱：放在 src/encoding/base64 目錄裡的套件會以 encoding/base64 這個名稱引入，不是 encoding_base64 也不是 *encodingBase64*。
+這也是為什麼有些文件或教學，力主 go 程式碼不應該放在 src/ 目錄下。
 
-程式可以用套件名稱來參考套件中公開的資源，這樣可以避免混淆。切勿使用 . 來引入，這是設計來簡化一些必須在套件外進行的測試，除此之外的用途應當盡量避免。例如在 bufio 套件中，具有緩衝區的可讀取串流會命名為 Reader 而不是 BufReader，因為 bufio.Reader 比 bufio.BufReader 更簡短也更精確。進一步來說，因為引用的時候會以套件名稱作為前綴，所以 bufio.Reader 不會跟 io.Reader 混淆。同樣的，用來產生一個新的 ring.Ring 實體的函式 (在 Go 語言裡稱為建構子)，通常會命名為 NewRing，但考慮到 ring 套件裡只有 Ring 這個公開的 struct，而且套件名稱跟 struct 名稱又重複，所以取名為 New 可以更加簡潔：其他人會使用 ring.New 來呼叫它。總之就是利用套件結構來幫助你選擇一個好名字。
+套件的導入者將使用該名稱來引用其內容，因此，套件中的導出名稱可以使用該事實來避免卡頓。 （不要使用import表示法，這樣可以簡化必須在測試套件之外運行的測試，但應避免這樣做。）例如，bufio 套件中的緩衝讀取器類型稱為Reader，而不是BufReader，因為 用戶將其視為bufio.Reader，這是一個簡潔明了的名稱。 而且，由於導入的實體始終使用其套件名稱來尋址，因此bufio.Reader不會與io.Reader衝突。 類似地，用於創建ring的新實例的函數。Ring（這是Go中構造函數的定義）通常被稱為NewRing，但是由於Ring是該套件導出的唯一類型，並且由於該套件被稱為ring，因此 稱為“ New”，該軟件套件的客戶端將其稱為“ ring.New”。 使用包結構可以幫助您選擇好名字。
 
-另一個好例子是 once.Do：寫 once.Do(setup) 很清楚，就算你寫的更長 once.DoOrWaitUntilDone(setup) 也不會更清楚。很長的名稱不見得讓人容易理解，清楚又精確的說明文件會更有效果。
-成員存取方法 (Getter / Setter)
+另一個好例子是 once.Do： once.Do(setup) 讀起來很清楚，就算你寫的更長 once.DoOrWaitUntilDone(setup) 也不會更清楚。很長的名稱不見得讓人容易理解，清楚又精確的說明文件會更有價值。
+
+## 成員存取方法 (Getter / Setter)
 
 Go 語言並沒有在語言層面支援成員存取方法。使用成員存取方法沒有錯，而且通常是不錯的設計模式，但是在成員存取方法前加上 Get 或 Set 既不必要，也不符合 Go 語言的慣例。如果你有個成員變數叫做 owner (小寫字母開頭代表不能公開存取)，那麼相關的成員存取方法應該稱為 Owner() (大寫字母開頭) 以及 SetOwner()。這樣閱讀起來也十分清楚：
 
