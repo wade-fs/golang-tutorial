@@ -476,3 +476,13 @@ Markdown | Less | Pretty
   - [ ] 另一條待辦事項
   - [x] 新一條完成事項
 
+# [markdown-toc](https://github.com/jonschlinkert/markdown-toc)
+
+這是一個工具，讓你依據 markdown 檔案產生目錄  
+用法在網站就有說，比較簡單的想法是這樣:  
+有一支 xx.md, 然後我們可以：  
+markdown-toc xx.md > xx-toc.md  
+
+然後再自己將這個檔放到 xx.md 的前面即可
+
+
