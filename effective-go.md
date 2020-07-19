@@ -161,16 +161,18 @@ import "bytes"
 
 另一個好例子是 once.Do： once.Do(setup) 讀起來很清楚，就算你寫的更長 once.DoOrWaitUntilDone(setup) 也不會更清楚。很長的名稱不見得讓人容易理解，清楚又精確的說明文件會更有價值。
 
-## 成員存取方法 (Getter / Setter)
+## 成員存取方法 (Getter / Setter)  
 
 Go 語言並沒有在語言層面支援成員存取方法。使用成員存取方法沒有錯，而且通常是不錯的設計模式，但是在成員存取方法前加上 Get 或 Set 既不必要，也不符合 Go 語言的慣例。如果你有個成員變數叫做 owner (小寫字母開頭代表不能公開存取)，那麼相關的成員存取方法應該稱為 Owner() (大寫字母開頭) 以及 SetOwner()。這樣閱讀起來也十分清楚：
 
+``` go  
 owner := obj.Owner()
 if owner != user {
     obj.SetOwner(user)
 }
+```
 
-介面名稱
+## 介面名稱
 
 慣例上，只有一個方法的介面，會用方法的名字加上 er 字尾，或是其他類似的方式來命名，這樣可以營造一種代理人的感覺，像是 Reader, Writer, Formatter 等等。
 
@@ -184,21 +186,25 @@ Go 也像 C 語言一樣使用分號來分隔敘述，但你在源碼檔中看�
 
 規則很單純，如果一行的最後一個語法單元是識別子 (identifier)、簡單表達式 (像是數字或字串常數)、或是以下幾個關鍵字之一
 
-break continue fallthrough return ++ -- ) }
+`break continue fallthrough return ++ -- ) }`
 
 編譯器會在這些語法單元後面加上分號。簡單來說，如果某一行是以「代表語句終結」的關鍵字結束，就加上分號。
 
 在右大括號前面的分號也可以省略：
 
-go func() { for { dst <- <-src } }()
+``` go  
+go func() { for { dst <- <-src } }()  
+```
 
 Go 程式通常只會在 for 敘述裡使用分號，這是用來隔開迴圈的初始、條件、後處理這三個寫在同一行的敘述。
 
 這個自動加分號的規則暗示了你不可以把流程控制語句 (for, if, switch, select) 的左大括號放到下一行，因為分號會加到大括號的前面去，而顯然這不會是你想要的結果。所以應該要寫成這樣
 
-if i < f() {
-    g()
-}
+``` go  
+if i < f() {  
+    g()  
+}  
+```
 
 流程控制
 
@@ -207,174 +213,206 @@ if
 
 簡單的 if 語句像是這樣
 
-if x > 0 {
-    return y
-}
+``` go  
+if x > 0 {  
+    return y  
+}  
+```
 
 不能省略的大括號暗示了應該避免寫單行的 if 語句，尤其當裡面有 return 或 break 的時候更是如此。
 
 因為 if 像 for 一樣可以接受初始語句，所以在 if 語句初始一個區域變數是很常見的寫法：
 
-if err := file.Chmod(0664); err != nil {
-    log.Print(err)
-    return err
-}
+``` go  
+if err := file.Chmod(0664); err != nil {  
+    log.Print(err)  
+    return err  
+}  
+```
 
 在 Go 的核心程式庫裡，你會發現很多可能不會執行下一行程式的 if 語句 (比如說裡面的最後一個敘述是 return, break continue之類的) 都省略掉了else` 敘述：
 
-f, err := os.Open(name)
-if err != nil {
-    return err
-}
-codeUsing(f)
+``` go  
+f, err := os.Open(name)  
+if err != nil {  
+    return err  
+}  
+codeUsing(f)  
+```
 
 這是一般常見用來偵測、防止例外情況的寫法。如果你的程式一路上把出錯的情況都挑掉，正常的情況執行下去，那麼它就會很容易閱讀。如果錯誤都透過 return 敘述離開你的函式，那麼最後寫出來的程式碼就不會有 else 敘述：
 
-f, err := os.Open(name)
-if err != nil {
-    return err
-}
-d, err := f.Stat()
-if err != nil {
-    f.Close()
-    return err
-}
-codeUsing(f, d)
+``` go  
+f, err := os.Open(name)  
+if err != nil {  
+    return err  
+}  
+d, err := f.Stat()  
+if err != nil {  
+    f.Close()  
+    return err  
+}  
+codeUsing(f, d)  
+```
 
 重新宣告與重新指定
 
 上一節的最後一個範例展示了短式宣告 := 的使用方式。
 
-f, err := os.Open(name)
+`f, err := os.Open(name)`
 
 這一行宣告了 f 和 err 兩個變數。而後面的
 
-d, err := f.Stat()
+`d, err := f.Stat()`
 
 看起來好像是宣告了 d 和 err 兩個變數。要注意的是，雖然看起來 err 好像宣告了兩次，但這是合法的敘述：err 在第一個敘述中宣告，而第二個敘述裡只是重新指定了新的值。也就是說在呼叫 f.Stat 的時候，err 會使用之前宣告的那個變數，只是賦予新的值給它。
 
 所以若是滿足以下三個條件，使用 := 宣告先前宣告過的變數會變成賦予新值：
 
-    必須要在相同的有效範圍 (scope) 內。如果是不同的有效範圍就會變成宣告一個同名的、全新的區域變數 (註)。
-    型別要相同。
-    := 左邊至少要有一個之前沒有宣告過的變數。
+> 必須要在相同的有效範圍 (scope) 內。如果是不同的有效範圍就會變成宣告一個同名的、全新的區域變數 (註)。
+> 型別要相同。
+> 
+> := 左邊至少要有一個之前沒有宣告過的變數。
 
 這個特性雖然不太常見，但卻很實用。這會讓你簡單地重用相同的 err 變數，這種用法在一長串的 if-else 中特別常見。
 
 備註：值得注意的是，在 Go 語言中，函式的參數及回傳值雖然寫在函式大括號的外面，但其實它們跟函式本體屬於同一個有效範圍。
-for
+
+# for
 
 Go 裡面的 for 跟 C 裡面的有點像又不太像。它把 for 跟 while 整合在一起：因為 Go 沒有 *do-while*。for 有三種形式：
 
-// Like a C for
-for init; condition; post { }
-
-// Like a C while
-for condition { }
-
-// Like a C for(;;)
-for { }
+``` go  
+// Like a C for  
+for init; condition; post { }  
+  
+// Like a C while  
+for condition { }  
+  
+// Like a C for(;;)  
+for { }  
+```
 
 短式宣告讓你可以輕易宣告一個只在迴圈中有效的變數：
 
-sum := 0
-for i := 0; i < 10; i++ {
-    sum += i
-}
+``` go  
+sum := 0  
+for i := 0; i < 10; i++ {  
+    sum += i  
+}  
+```
 
 如果你要遍歷一個 array, slice, string 或是 map，你可以使用 range 語法：
 
-for key, value := range oldMap {
-    newMap[key] = value
-}
+``` go  
+for key, value := range oldMap {  
+    newMap[key] = value  
+}  
+```
 
 如果只要 key 值的話：
 
-for key := range m {
-    if key.expired() {
-        delete(m, key)
-    }
-}
+``` go  
+for key := range m {  
+    if key.expired() {  
+        delete(m, key)  
+    }  
+}  
+```
 
 相反地，不要 key 值的話：
 
-sum := 0
-for _, value := range array {
-    sum += value
-}
+``` go  
+sum := 0  
+for _, value := range array {  
+    sum += value  
+}  
+```
 
 空識別子 (_) 有很多用法，會在稍後的章節介紹。
 
 在遍歷字串 (string) 的時候，for 會幫你做些處理：幫你解析 UTF8，斷字在正確的位元。錯誤的編碼會消耗一個位元組 (byte)，並回傳一個特別的 rune (rune 是 Go 的術語，指的是一個 UTF8 的字元。在 Go 裡有套件專門處理 rune) U+FFFD。以下的程式碼：
 
-for pos, char := range "日本\x80語" { // \x80 is an illegal UTF-8 encoding
-    fmt.Printf("character %#U starts at byte position %d\n", char, pos)
-}
+``` go  
+for pos, char := range "日本\x80語" { // \x80 is an illegal UTF-8 encoding  
+    fmt.Printf("character %#U starts at byte position %d\n", char, pos)  
+}  
+```
 
 會顯示
 
-character U+65E5 '日' starts at byte position 0
-character U+672C '本' starts at byte position 3
-character U+FFFD '�' starts at byte position 6
-character U+8A9E '語' starts at byte position 7
+``` shell  
+character U+65E5 '日' starts at byte position 0  
+character U+672C '本' starts at byte position 3  
+character U+FFFD '�' starts at byte position 6  
+character U+8A9E '語' starts at byte position 7  
+```
 
 最後，Go 沒有逗號這個運算子，而且 ++ 和 -- 是完整的語句而不是敘述的一部份。如果你需要在 for 裡使用多個變數，你可以用多重指定：
 
-// Reverse a
-for i, j := 0, len(a)-1; i < j; i, j = i+1, j-1 {
-    a[i], a[j] = a[j], a[i]
-}
+``` go  
+// Reverse a  
+for i, j := 0, len(a)-1; i < j; i, j = i+1, j-1 {  
+    a[i], a[j] = a[j], a[i]  
+}  
+```
 
-switch
+# switch
 
 Go 的 switch 比 C 的要泛用。case 敘述比對的值不一定要是常數。case 敘述會依上到下的順序一一比對，直到找到符合的項目。如果 switch 後面沒有東西，那麼就會當成是 switch true。所以你可以 (而且這也是慣例) 把一長串的 if-else if 改寫成 switch：
 
-func unhex(c byte) byte {
-    switch {
-    case '0' <= c && c <= '9':
-        return c - '0'
-    case 'a' <= c && c <= 'f':
-        return c - 'a' + 10
-    case 'A' <= c && c <= 'F':
-        return c - 'A' + 10
-    }
-    return 0
-}
+``` go  
+func unhex(c byte) byte {  
+    switch {  
+    case '0' <= c && c <= '9':  
+        return c - '0'  
+    case 'a' <= c && c <= 'f':  
+        return c - 'a' + 10  
+    case 'A' <= c && c <= 'F':  
+        return c - 'A' + 10  
+    }  
+    return 0  
+}  
+```
 
 不像 C 語言，Go 的 switch 不會跨越到下一個 case 執行，但你可以使用逗號代表「這些值都可以」：
 
-func shouldEscape(c byte) bool {
-    switch c {
-    case ' ', '?', '&', '=', '#', '+', '%':
-        return true
-    }
-    return false
-}
+``` go  
+func shouldEscape(c byte) bool {  
+    switch c {  
+    case ' ', '?', '&', '=', '#', '+', '%':  
+        return true  
+    }  
+    return false  
+}  
+```
 
 雖然在 Go 裡不常用，但你確實可以用 break 跳出 switch，就像在其他類 C 的語言裡一樣。有時候你不止想要跳出 switch，可能想要連外層的 for 迴圈一併跳過，你可以用 break 加標記的方式達成：
 
-Loop:
-	for n := 0; n < len(src); n += size {
-		switch {
-		case src[n] < sizeOne:
-			if validateOnly {
-				break
-			}
-			size = 1
-			update(src[n])
-
-		case src[n] < sizeTwo:
-			if n+1 >= len(src) {
-				err = errShortInput
-				break Loop
-			}
-			if validateOnly {
-				break
-			}
-			size = 2
-			update(src[n] + src[n+1]<<shift)
-		}
-	}
+``` go  
+Loop:  
+	for n := 0; n < len(src); n += size {  
+		switch {  
+		case src[n] < sizeOne:  
+			if validateOnly {  
+				break  
+			}  
+			size = 1  
+			update(src[n]) 1 
+  
+		case src[n] < sizeTwo:  
+			if n+1 >= len(src) {  
+				err = errShortInput  
+				break Loop  
+			}  
+			if validateOnly {  
+				break  
+			}  
+			size = 2  
+			update(src[n] + src[n+1]<<shift)  
+		}  
+	}  
+```
 
 當然，continue 也可以加標記，但只能用在迴圈上。
 
