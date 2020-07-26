@@ -7,7 +7,7 @@
 _Go by Example_ 是使用帶註釋的示例程序的動手入門(照著做做看)。 查看[第一個示例](hello-world.md)或瀏覽下面的完整列表。
 
 *   [第一個示例](gobyexample/hello-world.md)
-*   [值](gobyexample/values.md)
+*   [值與型態](gobyexample/values.md)
 *   [變數](gobyexample/variables.md)
 *   [常數](gobyexample/constants.md)
 *   [For](gobyexample/for.md)
@@ -17,6 +17,7 @@ _Go by Example_ 是使用帶註釋的示例程序的動手入門(照著做做看
 *   [Slices](gobyexample/slices.md)
 *   [Maps](gobyexample/maps.md)
 *   [Range](gobyexample/range.md)
+*   [Strings](gobyexample/strings.md)
 *   [Functions](gobyexample/functions.md)
 *   [多重返回值](gobyexample/multiple-return-values.md)
 *   [可變的 Functions](gobyexample/variadic-functions.md)

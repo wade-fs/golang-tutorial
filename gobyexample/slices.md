@@ -1,6 +1,7 @@
 # [Go by Example](../gobyexample.md): Slices
 
-`Slices` 在 go 語言中是更關鍵性的型態，比前面的 `array` 更彈性的用法。
+`Slices` 在 go 語言中是更關鍵性的型態，比前面的 `array` 更彈性的用法。  
+例如增刪元素，切片再切片等等, 雖然實際上切片(Slice)也是 `array` 來實作，但是用法上是有點差異的。  
 
 ``` go
 package main
