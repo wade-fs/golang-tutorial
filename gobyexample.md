@@ -19,7 +19,7 @@ _Go by Example_ 是使用帶註釋的示例程序的動手入門(照著做做看
 *   [Range](gobyexample/range.md)
 *   [Functions](gobyexample/functions.md)
 *   [多重返回值](gobyexample/multiple-return-values.md)
-*   [可變的 Functions](gobyexample/variadic-functions.md)
+*   [Variadic Functions](gobyexample/variadic-functions.md)
 *   [閉包](gobyexample/closures.md)
 *   [遞迴](gobyexample/recursion.md)
 *   [指標](gobyexample/pointers.md)
