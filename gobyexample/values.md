@@ -31,7 +31,8 @@ true
 false
 ```
 
-這邊示範的都算是 `常數值` 的使用例，後面還會有更複雜的 [Strings](strings.md), [Arrays](arrays.md), [Maps](maps.md), [Slices](slices.md), [Channel](channel.md) 等介紹
+上面示範的都算是 `常數值` 的使用例，後面還會有更複雜的 [Arrays](arrays.md), [Maps](maps.md), [Slices](slices.md), [Channel](channel.md) 等介紹.  
+底下就介紹其他的內建資料型態:  
 
 # 布林:
 
@@ -152,6 +153,115 @@ Go 的字串在實作上使用 UTF-8，就目前必須先知道的是，當使�
 如果對字串使用 len 函式，傳回的會是位元組數量，而不是 Unicode 碼點的數量；如果使用 [] 搭配索引，取得特定索引位置的值，那麼傳回的會是 byte（uint8）型態。
 
 在 Go 中，可以對字串使用切片（slice）操作，傳回的型態會是 string 型態，例如，"Justin"[0:2] 會傳回字串 "Ju"，不過，這是取得索引 0、1 處的位元組，再建立 string 傳回，因此，對於 "語言" 這個字串，如果想用切片操作取得 "語" 這個子字串，必須使用 "語言"[0:3]，因為 Go 的字串在實作上使用 UTF-8，一個中文字基本上佔三個位元組。
+
+## 多行字串
+
+上面使用 ".." 來使用字串時，並不能多行，此時有兩個方法解決，
+- 方法一  
+``` go
+text := `這是第一行  
+這邊是第二行  
+  
+這邊是第四行  
+`
+
+- 另一個方法是像這樣:   
+``` go
+text := "這是第一行\n這是第二行\n\n這是第四行\n"
+```
+
+
+## 特殊字元
+
+字串的中文是 Unicode, 每個中文占3個位元，底下可以很清楚:  
+`text := "\x47\x6f\xe8\xaa\x9e\xe8\xa8\x80"`  相當於 "Go語言"
+
+-    \a：U+0007，警示或響鈴
+-    \b：U+0008，倒退（backspace）
+-    \f：U+000C，饋頁（form feed）
+-    \n：U+000A，換行（newline）
+-    \r：U+000D，歸位（carriage return）
+-    \t：U+0009，水平 tab
+-    \v：U+000b，垂直 tab
+-    \\：U+005c，反斜線（backslash）
+-    \"：U+0022，雙引號
+-    \ooo：位元組表示，o 為八進位數字
+-    \xhh：位元組表示，h 為十六進位數字
+-    \uhhhh：Unicode 點點表示，使用四個 16 進位數字
+-    \Uhhhhhhhh：Unicode 點點表示，使用八個 16 進位數字
+
+## 字串 與 []byte 的轉換
+
+``` go
+package main
+
+import "fmt"
+
+func main() {
+    text1 := "Go語言"
+    bs := []byte(text1)
+    bs[0] = 103
+    text2 := string(bs)
+    fmt.Println(text1) // Go語言
+    fmt.Println(text2) // go語言
+}
+```
+[執行](https://play.golang.org/p/tLeRXTD-LIu)
+
+``` shell
+$ go run prog.go
+Go語言
+go語言
+```
+
+# Rune
+
+這邊特別獨立出來一個議題，如果要像我們想像的 `Go語言` 是 4個字的話，它的單位叫 Rune  
+Rune 實作上是 int32 的別名，專門用來儲存 Unicode 的碼點(code point), 使用 fmt 時是 %c  
+
+``` go
+package main
+
+import "fmt"
+
+func main() {
+    text := "Go語言"
+    cs := []rune(text)
+    fmt.Printf("%c\n", cs[2]) // 語
+    fmt.Println(len(cs))      // 4
+}
+```
+[執行](https://play.golang.org/p/TaUAgfyrZrr)
+
+``` shell
+$ go run prog.go
+語
+4
+```
+
+## Rune 與 range
+
+``` go
+package main
+
+import "fmt"
+
+func main() {
+    text := "Go語言"
+    for index, runeValue := range text {
+        fmt.Printf("%#U 位元起始位置 %d\n", runeValue, index)
+    }
+}
+```
+[執行](https://play.golang.org/p/IEnHa-lHvQo)
+
+``` shell
+$ go run prog.go
+U+0047 'G' 位元起始位置 0
+U+006F 'o' 位元起始位置 1
+U+8A9E '語' 位元起始位置 2
+U+8A00 '言' 位元起始位置 5
+```
 
 
 下一範例: [變數](variables.md)

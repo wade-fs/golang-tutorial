@@ -17,7 +17,6 @@ _Go by Example_ 是使用帶註釋的示例程序的動手入門(照著做做看
 *   [Slices](gobyexample/slices.md)
 *   [Maps](gobyexample/maps.md)
 *   [Range](gobyexample/range.md)
-*   [Strings](gobyexample/strings.md)
 *   [Functions](gobyexample/functions.md)
 *   [多重返回值](gobyexample/multiple-return-values.md)
 *   [可變的 Functions](gobyexample/variadic-functions.md)
