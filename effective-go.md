@@ -63,21 +63,19 @@
 
 # 簡介
 
-
-Go是一種新語言。 儘管它藉鑑了現有語言的思想，但它具有非同尋常的特性，使有效的Go程序的特性與親戚編寫的程序不同。 將C ++或Java程序直接轉換為Go，反而不太可能產生令人滿意的結果，而是直接採用 go 語言的特色來撰寫- 就像 Java程序是用 Java 而不是Go編寫的。 另一方面，從Go角度考慮問題可能會產生成功但完全不同的程序。 換句話說，要編寫好語言，重要的是要了解它的特性和慣用語。 了解Go編程中已建立的約定（例如命名，格式設置，程序構造等）很重要，這樣您編寫的程序將易於其他Go程序員理解。
+Go 是一門新的程式語言。雖然它從現有的程式語言中借鏡了許多設計理念，但它也有許多與眾不同的特性。若你把用 C++ / Java 撰寫的程式改寫成等價的 Go 程式，恐怕難以得到令人滿意的結果。同樣地，用 Go 語言的角度來解決問題，你可能會寫出有效但不太一樣的程式。換句話說，想要寫出好的 Go 程式，對於 Go 語言特性及慣例的掌握是重要的一環。同時，對於社群慣例 (比如排版、命名方式、程式的建立等等) 也應該要適當的了解，這樣其他使用 Go 語言的開發者才容易理解你寫的程式。
 
 這份文件列舉出一些訣竅，讓你寫出清楚、符合 Go 語言特性的程式。這是對於 [Go 語言規格書](https://golang.org/ref/spec)、[導覽 Go 語言](https://tour.golang.org/) 以及 [如何撰寫 Go 程式](https://golang.org/doc/code.html) 等三份文件的補充，所以你應該先讀過這三份文件。
 
-
 ## 範例
 
-[Go 標準套件庫源碼](https://golang.org/src/) 除了作為核心程式庫之外，也是如何使用 Go 語言的最佳範例。此外，大部份的 Go 套件都會有一些可以直接在 [golang.org](https://golang.org/) 網站上讓你實驗的範例，比如像是 [這個](https://golang.org/pkg/strings/#example_Map) (你也許會需要點擊 Example 字樣來顯示範例)。如果你對於如何呈現問題或是某事物的實作方式有疑問，Go 套件庫的文件、源碼以及範例可以提供你靈感、解答或是相關的背景知識。
+[Go 標準套件庫原始碼](https://golang.org/src/) 除了作為核心程式庫之外，也是如何使用 Go 語言的範例。更進一步地，大部份的套件都會有一些可以直接在 [golang.org](https://golang.org/) 網站上讓你實驗的範例，比如像是 [這個](https://golang.org/pkg/strings/#example_Map) (你也許會需要點擊 Example 字樣來顯示範例)。如果你對於如何呈現問題或是某事物的實作方式有疑問，Go 套件庫的文件、原始碼以及範例可以提供你靈感、解答或是相關的背景知識。
 
 # 排版格式
 
-排版風格是最常被討論但風格迥異但結果卻大同小異的問題。人們可以套用各式各樣的風格卻不影響結果，反過來思考一下，如果大家的風格能統一的話是不是能減輕溝通的壓力，以及壓平學習曲線呢！。風格統一最困難的一點，就是如何避免寫出冗長的風格規範。
+排版風格問題是最常被討論但很少有結果的問題。人們可以套用各式各樣的風格，但如果大家的風格能統一的話會更好。風格統一最困難的一點，就是如何避免寫出落落長的風格規範。
 
-對於 Go 語言來說，我們使用了一種很少見的解決方式：讓機器來為我們處理排版問題。[gofmt] 工具 (或是 go fmt，它會將整個套件的源碼都重新排版，而非只處理單一源碼檔案) 讀取 Go 程式碼，依照標準的排版風格把程式碼重新排版。如果你想弄清楚某種情況下應該怎麼排版，就執行 [gofmt]。如果結果看起來怪怪的，你可以調整你的程式 (或是提出 [gofmt] 的錯誤回報)，千萬不要削足適履 。
+對於 Go 語言來說，我們使用了一種很少見的解決方式：讓機器來為我們處理排版問題。[gofmt] 工具 (或是 go fmt，它會將整個套件的原始碼都重新排版，而非只處理單一源碼檔案) 讀取 Go 程式碼，依照標準的排版風格把程式碼重新排版。如果你想弄清楚某種情況下應該怎麼排版，就執行 [gofmt]。如果結果看起來怪怪的，你可以調整你的程式 (或是提出 [gofmt] 的錯誤回報)，千萬不要削足適履 。
 
 舉個例子，你再也不需要拼命按 Tab 和空白鍵去對齊你的行內註解：
 
@@ -97,34 +95,34 @@ type T struct {
 }  
 ```
 
-標準套件庫的源碼都有使用 [gofmt] 排版過。
+標準套件庫的原始碼都有使用 [gofmt] 排版過。
 
 當然還有些排版的細節我們沒有提到，簡略的說：
 
-    縮排：我們使用 Tab 來縮排，[gofmt] 預設會忽略它們。非必要的話別使用空白來縮排。
+    縮排：我們使用 *Tab* 來縮排，[gofmt] 預設會忽略它們。非必要的話別使用空白來縮排。
     行寬：Go 沒有行寬限制，不用擔心你的程式碼太長。如果你真的覺得它太長了，可以換行並縮排它。
-    括號：Go 需要的括號遠比 C++ / Java 來得少：流程控制敘述 (if, for, switch) 沒有小括號。運算子之間的優先順序也會以排版的方式突顯。比如
+    括號：Go 需要的括號遠比 C++ / Java 來得少：流程控制敘述 (`if`, `for`, `switch`) 沒有小括號。運算子之間的優先順序也會以排版的方式突顯。比如
 
 ``` go  
 x<<8 + y<<16
 ```
 
-go 語言的空白就像人類的直覺一樣，而不是依賴運算子的優先順序  
+go 語言的空白就像人類的直覺一樣，而不是依賴運算子的優先順序
 
 # 註解
 
-Go 提供的 C 風格的區塊註解 /* */ 以及 C++ 風格的行內註解 //。行內註解算是慣用法，區塊註解通常是用來說明整個套件或是程式區塊、函式的前面等，但當你想要暫時停用某段程式碼的時候也很適合, 也就是說，所有程式除了套件檔頭外，全部採用行內註解，在不需要的程式碼處才用區塊註解將它們當成註解。
+Go 提供的 C 風格的區塊註解 /* */ 以及 C++ 風格的行內註解 //。行內註解比較常用到，區塊註解通常是用來說明整個套件，但當你想要暫時停用某段程式碼的時候也很適合。
 
-[godoc] 程式 (它同時也是一個 web server) 會解析源碼中的註解。在最外層的宣告語句上面的註解，如果沒有被空行隔開的話，會當成是那個語句的說明。這些說明的內容決定了 [godoc] 是否能產生出高品質的說明文件。
+[godoc] 程式 (它同時也是一個 web server) 會解析原始碼中的註解。在最外層的宣告語句上面的註解，如果沒有被空行隔開的話，會當成是那個語句的說明。這些說明的內容決定了 [godoc] 是否能產生出高品質的說明文件。
 
 每個套件都應該要有一份套件說明，也就是在 package 語法上方的區塊註解。如果套件裡有多個源碼檔案，註解可以寫在其中任何一個檔案裡。套件說明應該是整體性的說明，或是提供整個套件的通用資訊。套件說明在 [godoc] 產生出來的文件裡會在頁面的最上方，所以你應該寫詳細點，像是這樣：
 
 ``` go  
 /*  
 Package regexp implements a simple library for regular expressions.  
-  
+
 The syntax of the regular expressions accepted is:  
-  
+
     regexp:  
         concatenation { '|' concatenation }  
     concatenation:  
@@ -141,38 +139,38 @@ The syntax of the regular expressions accepted is:
 */  
 package regexp  
 ```  
-  
+
 如果套件很簡單，說明當然也可以簡短些：  
-  
+
 ``` go    
 // Package path implements utility routines for    
 // manipulating slash-separated filename paths.    
 ```  
-  
+
 註解不需要用星號一類的字元做出框框，因為產生出來的文件不一定會用固定寬度的文字來呈現，所以不要用空白一類的方式來排版，[godoc], 像 [gofmt] 會幫你處理排版問題。  
-  
+
 註解應該是純文字，避免使用像 HTML 或是其他像 __this__ 這類的標記方式，因為它會被原字重複。[godoc] 的其中一種排版方式，是把縮排後的文字用固定寬度文字顯示，方便你在說明中嵌入範例程式碼。[fmt 套件](https://golang.org/pkg/fmt/) 的說明是個值得學習的好例子。  
-  
+
 某些情況下 [godoc] 也許完全不會重新排版，所以你應該讓你的註解容易閱讀：不要寫錯別字、正確使用標點符號、在適當的地方斷句等等。  
-  
+
 套件裡每個最外層的宣告語句，其上方的註解都會被當成是說明文件。每個公開的識別名稱 (exported，就是首字大寫的名稱) 都應該要有一份說明。  
-  
+
 說明文件應該要是完整的句子，而且應該具備『自我表達』的功用。第一句應該是簡略的說明，並且以宣告語句所宣告的識別名稱做為開頭。  
-  
+
 ``` go    
 // Compile parses a regular expression and returns, if successful, a Regexp    
 // object that can be used to match against text.    
 func Compile(str string) (regexp *Regexp, err error) {    
 ```  
-  
-如果每個文檔註釋都以其描述的項目名稱開頭，則可以使用go工具的doc子命令並通過grep運行輸出。 想像一下，您忘記了名稱“ Compile”，但在尋找正則表達式的解析函數，因此您運行了該命令，  
-  
+
+如果每個文檔註釋都以其描述的項目名稱開頭，則可以使用go工具的doc子命令並通過 `grep` 運行輸出。 想像一下，您忘記了名稱 **Compile**，但在尋找正則表達式的解析函數，因此您運行了該命令，  
+
 ``` shell    
 $ go doc -all regexp | grep -i parse    
 ```  
-  
-如果你的說明文件寫「這個函式是用來…」，顯然你不會因此想起函式名稱來。但如果你把名稱寫在說明文件的開頭，那你就會知道可能是 Compile 函式：  
-  
+
+如果你的說明文件寫「這個函式是用來…」，顯然你不會因此想起函式名稱來。但如果你把名稱寫在說明文件的開頭，那你就會知道可能是 **Compile** 函式：  
+
 ``` shell    
 $ go doc -all regexp | grep -i parse    
     Compile parses a regular expression and returns, if successful, a Regexp    
@@ -180,9 +178,9 @@ $ go doc -all regexp | grep -i parse
     parsed. It simplifies safe initialization of global variables holding    
 $    
 ```  
-  
+
 Go的聲明語法允許對聲明進行分組。 單個文檔註釋可以引入一組相關的常量或變量。 由於整個聲明都已提出，因此這樣的註解常常是敷衍了事。  
-  
+
 ``` go    
 // Error codes returned by failures to parse an expression.    
 var (    
@@ -191,9 +189,9 @@ var (
     ErrUnmatchedRpar = errors.New("regexp: unmatched ')'")    
 )    
 ```  
-  
+
 群組還可以指示項目之間的關係，例如一組變量受互斥鎖保護的事實:    
-  
+
 ``` go    
 var (    
     countLock   sync.Mutex    
@@ -202,102 +200,111 @@ var (
     errorCount  uint32    
 )    
 ```  
-  
+
 # 命名規則  
-  
+
 就像在其他語言一樣，命名規則對 Go 語言來說是十分重要的。更進一步地，它還有語意上的效果：一個變數、常數、函式是否能被其他套件的程式碼取用，端看它的名稱是否是以大寫字母開頭。所以命名規則實在值得我們花點篇幅好好介紹一番。  
-  
+
 ## 套件命名  
-  
-當你引用 (import) 某個套件之後，它的名稱便成為你存取相關資源的憑據。比如你  
-  
+
+當你引用 (**import**) 某個套件之後，它的名稱便成為你存取相關資源的憑據。比如你  
+
 ``` go    
-import "bytes"    
+import "bytes"   
 ```  
-  
-之後，就可以用 bytes.Buffer 來存取 bytes 套件中定義的 Buffer。如果每個人都可以用相同的名字來存取相同的套件內容，事情就會簡單許多；這代表了套件的名字要取的簡潔有力。慣例上，套件名稱應該是小寫的單字，避免使用底線或大小寫混雜。考慮到大家都會在程式碼中一再輸入各種名稱，像是 Err 這樣夠簡短，又能讓人一眼看出來的名稱會更好。套件名稱只是引用時的預設名稱，所以不用擔心會和其他套件撞名，也不需要強制在每個源碼檔中使用相同的名稱。如果真的發生撞名的情況，你完全可以在引用的時候指定一個別名給它。通常你不會因此搞混，因為引用時的完整套件名稱讓你可以確定自己是引用了什麼。  
-  
-另一個慣例是我們會用源碼的目錄作為套件名稱：放在 src/encoding/base64 目錄裡的套件會以 encoding/base64 這個名稱引入，不是 encoding_base64 也不是 *encodingBase64*。  
-這也是為什麼有些文件或教學，力主 go 程式碼不應該放在 src/ 目錄下。  
-  
-套件的導入者將使用該名稱來引用其內容，因此，套件中的導出名稱可以使用該事實來避免卡頓。 （不要使用import表示法，這樣可以簡化必須在測試套件之外運行的測試，但應避免這樣做。）例如，bufio 套件中的緩衝讀取器類型稱為Reader，而不是BufReader，因為 用戶將其視為bufio.Reader，這是一個簡潔明了的名稱。 而且，由於導入的實體始終使用其套件名稱來尋址，因此bufio.Reader不會與io.Reader衝突。 類似地，用於創建ring的新實例的函數。Ring（這是Go中構造函數的定義）通常被稱為NewRing，但是由於Ring是該套件導出的唯一類型，並且由於該套件被稱為ring，因此 稱為“ New”，該軟件套件的客戶端將其稱為“ ring.New”。 使用包結構可以幫助您選擇好名字。  
-  
-另一個好例子是 once.Do： once.Do(setup) 讀起來很清楚，就算你寫的更長 once.DoOrWaitUntilDone(setup) 也不會更清楚。很長的名稱不見得讓人容易理解，清楚又精確的說明文件會更有價值。  
-  
-## 成員存取方法 (Getter / Setter)    
-  
-Go 語言並沒有在語言層面支援成員存取方法。使用成員存取方法沒有錯，而且通常是不錯的設計模式，但是在成員存取方法前加上 Get 或 Set 既不必要，也不符合 Go 語言的慣例。如果你有個成員變數叫做 owner (小寫字母開頭代表不能公開存取)，那麼相關的成員存取方法應該稱為 Owner() (大寫字母開頭) 以及 SetOwner()。這樣閱讀起來也十分清楚：  
-  
+
+之後，就可以用 `bytes.Buffer` 來存取 `bytes` 套件中定義的 `Buffer`。如果每個人都可以用相同的名字來存取相同的套件內容，事情就會簡單許多；這代表了套件的名字要取的簡潔有力。慣例上，套件名稱應該是小寫的單字，避免使用底線或大小寫混雜。考慮到大家都會在程式碼中一再輸入各種名稱，像是 Err 這樣夠簡短，又能讓人一眼看出來的名稱會更好。套件名稱只是引用時的預設名稱，所以不用擔心會和其他套件撞名，也不需要強制在每個源碼檔中使用相同的名稱。如果真的發生撞名的情況，你完全可以在引用的時候指定一個別名給它。通常你不會因此搞混，因為引用時的完整套件名稱讓你可以確定自己是引用了什麼。   
+
+另一個慣例是我們會用原始碼的目錄作為套件名稱：放在 `src/encoding/base64` 目錄裡的套件會以 `encoding/base64` 這個名稱引入，不是 *encoding_base64* 也不是 *encodingBase64*。  
+這也是為什麼有些文件或教學，力主 go 程式碼不應該放在 `src/` 目錄下。  
+
+套件的導入者將使用該名稱來引用其內容，因此，套件中的導出名稱可以使用該事實來避免卡頓。 （不要使用 `import` 表示法，這樣可以簡化必須在測試套件之外運行的測試，但應避免這樣做。）例如，`bufio` 套件中的緩衝讀取器類型稱為 `Reader`，而不是 `BufReader`，因為 用戶將其視為 `bufio.Reader`，這是一個簡潔明了的名稱。 而且，由於導入的實體始終使用其套件名稱來尋址，因此 `bufio.Reader` 不會與 `io.Reader` 衝突。 類似地，用於創建 `ring` 的新實例的函數。`Ring`（這是 `Go` 中構造函數的定義）通常被稱為 `NewRing`，但是由於 `Ring` 是該套件導出的唯一類型，並且由於該套件被稱為 `ring`，因此 稱為 `New`，該軟件套件的客戶端將其稱為 `ring.New`。 使用包結構可以幫助您選擇好名字。  
+
+另一個好例子是 `once.Do`: `once.Do(setup)` 讀起來很清楚，就算你寫的更長 `once.DoOrWaitUntilDone(setup)` 也不會更清楚。很長的名稱不見得讓人容易理解，清楚又精確的說明文件會更有價值。  
+
+## 成員存取方法 (`Getter` / `Setter`)   
+
+Go 語言並沒有在語言層面支援成員存取方法。使用成員存取方法沒有錯，而且通常是不錯的設計模式，但是在成員存取方法前加上 `Get` 或 `Set` 既不必要，也不符合 Go 語言的慣例。如果你有個成員變數叫做 `owner` (小寫字母開頭代表不能公開存取)，那麼相關的成員存取方法應該稱為 `Owner()` (大寫字母開頭) 以及 `SetOwner()`。這樣閱讀起來也十分清楚：  
+
 ``` go    
 owner := obj.Owner()  
 if owner != user {  
     obj.SetOwner(user)  
 }  
 ```  
-  
+
 ## 介面名稱  
-  
-慣例上，只有一個方法的介面，會用方法的名字加上 er 字尾，或是其他類似的方式來命名，這樣可以營造一種代理人的感覺，像是 Reader, Writer, Formatter 等等。  
-  
-像這樣的名字很多，而遵守這個慣例會讓你更有生產力。像是 Read, Write, Close, String 這些都是，它們都有標準化的定義。為了避免混淆，除非你寫的函式和它們有相同的定義，否則就不要使用這些名字。相反地，如果你實做了相同的定義的函式，那麼就應該照它們的方式命名，比如用 String 而不是 ToString。  
+
+慣例上，只有一個方法的介面，會用方法的名字加上 er 字尾，或是其他類似的方式來命名，這樣可以營造一種代理人的感覺，像是 `Reader`, `Writer`, `Formatter` 等等。  
+
+像這樣的名字很多，而遵守這個慣例會讓你更有生產力。像是 `Read`, `Write`, `Close`, `String` 這些都是，它們都有標準化的定義。為了避免混淆，除非你寫的函式和它們有相同的定義，否則就不要使用這些名字。相反地，如果你實做了相同的定義的函式，那麼就應該照它們的方式命名，比如用 `String` 而不是 `ToString`。  
 
 ## 大小寫混合  
-  
-最後，如果你需要使用數個單字來做命名，用 MixedCaps 或是 mixedCaps，不要用底線。  
+
+最後，如果你需要使用數個單字來做命名，用 *MixedCaps* 或是 *mixedCaps*，不要用底線。  
 
 # 分號  
-  
+
 Go 也像 C 語言一樣使用分號來分隔敘述，但你在源碼檔中看不見它們。Go 的編譯器 (正確來說是語法分析器 lexer) 會依照簡單的規則自動在分析語法的時候幫你加上分號，所以通常你不需要自己動手。  
-  
+
 規則很單純，如果一行的最後一個語法單元是識別子 (identifier)、簡單表達式 (像是數字或字串常數)、或是以下幾個關鍵字之一  
-  
+
 `break continue fallthrough return ++ -- ) }`  
-  
+
 編譯器會在這些語法單元後面加上分號。簡單來說，如果某一行是以「代表語句終結」的關鍵字結束，就加上分號。  
-  
+
 在右大括號前面的分號也可以省略：  
-  
+
 ``` go    
 go func() { for { dst <- <-src } }()    
 ```  
-  
-Go 程式通常只會在 for 敘述裡使用分號，這是用來隔開迴圈的初始、條件、後處理這三個寫在同一行的敘述。  
-  
-這個自動加分號的規則暗示了你不可以把流程控制語句 (for, if, switch, select) 的左大括號放到下一行，因為分號會加到大括號的前面去，而顯然這不會是你想要的結果。所以應該要寫成這樣  
-  
+
+Go 程式通常只會在 `for` 敘述裡使用分號，這是用來隔開迴圈的初始、條件、後處理這三個寫在同一行的敘述。  
+
+這個自動加分號的規則暗示了你不可以把流程控制語句 (`for`, `if`, `switch`, `select`) 的左大括號放到下一行，因為分號會加到大括號的前面去，而顯然這不會是你想要的結果。所以應該要寫成這樣  
+
 ``` go    
 if i < f() {    
     g()    
 }    
 ```  
-  
+
 # 流程控制  
-  
-Go 的流程控制語法跟 C 很像，但有很多重要的不同。Go 沒有 do 和 while，只有比 C 更通用一點的 for；switch 比較有彈性；if 跟 switch 可以在條件判斷式之前加上一個初始語句，有點像 for 那樣；break 和 continue 可以指定標記；而且還有一些新的特性：支援型別判斷的 switch 和頻道多工器 select。語法上也有些微不同：條件式不用加小括號、不能省略大括號。  
+
+Go 的流程控制語法跟 C 很像，但有很多重要的不同。
+- Go 沒有 `do` 和 `while`，只有比 C 更通用一點的 `for`；  
+- `switch` 比較有彈性；
+- `if` 跟 `switch` 可以在條件判斷式之前加上一個初始語句，有點像 `for` 那樣；
+- `break` 和 `continue` 可以指定標記；
+- 還有一些新的特性：支援型別判斷的 `switch` 和
+- 頻道多工器 `select`。
+- 語法上也有些微不同：
+  + 條件式不用加小括號、
+  + 不能省略大括號。  
 
 ## if  
-  
+
 簡單的 if 語句像是這樣  
-  
+
 ``` go    
 if x > 0 {    
     return y    
 }    
 ```  
-  
-不能省略的大括號暗示了應該避免寫單行的 if 語句，尤其當裡面有 return 或 break 的時候更是如此。  
-  
-因為 if 像 for 一樣可以接受初始語句，所以在 if 語句初始一個區域變數是很常見的寫法：  
-  
+
+不能省略的大括號暗示了應該避免寫單行的 `if` 語句，尤其當裡面有 `return` 或 `break` 的時候更是如此。  
+
+因為 `if` 像 `for` 一樣可以接受初始語句，所以在 `if` 語句初始一個區域變數是很常見的寫法：  
+
 ``` go    
 if err := file.Chmod(0664); err != nil {    
     log.Print(err)    
     return err    
 }    
 ```  
-  
-在 Go 的核心程式庫裡，你會發現很多可能不會執行下一行程式的 if 語句 (比如說裡面的最後一個敘述是 return, break continue之類的) 都省略掉了else` 敘述：  
-  
+
+在 Go 的核心程式庫裡，你會發現很多可能不會執行下一行程式的 `if` 語句 (比如說 **裡面的最後一個敘述是 `return`, `break`, `continue` 之類的**) 都省略掉了 `else` 敘述：  
+
 ``` go    
 f, err := os.Open(name)    
 if err != nil {    
@@ -305,9 +312,9 @@ if err != nil {
 }    
 codeUsing(f)    
 ```  
-  
-這是一般常見用來偵測、防止例外情況的寫法。如果你的程式一路上把出錯的情況都挑掉，正常的情況執行下去，那麼它就會很容易閱讀。如果錯誤都透過 return 敘述離開你的函式，那麼最後寫出來的程式碼就不會有 else 敘述：  
-  
+
+這是一般常見用來偵測、防止例外情況的寫法。如果你的程式一路上把出錯的情況都挑掉，正常的情況執行下去，那麼它就會很容易閱讀。如果錯誤都透過 `return` 敘述離開你的函式，那麼最後寫出來的程式碼就不會有 `else` 敘述：  
+
 ``` go    
 f, err := os.Open(name)    
 if err != nil {    
@@ -320,113 +327,113 @@ if err != nil {
 }    
 codeUsing(f, d)    
 ```  
-  
+
 ## 重新宣告與重新指定  
-  
-上一節的最後一個範例展示了短式宣告 := 的使用方式。  
-  
+
+上一節的最後一個範例展示了短式宣告 `:=` 的使用方式。  
+
 `f, err := os.Open(name)`  
-  
+
 這一行宣告了 f 和 err 兩個變數。而後面的  
-  
+
 `d, err := f.Stat()`  
-  
-看起來好像是宣告了 d 和 err 兩個變數。要注意的是，雖然看起來 err 好像宣告了兩次，但這是合法的敘述：err 在第一個敘述中宣告，而第二個敘述裡只是重新指定了新的值。也就是說在呼叫 f.Stat 的時候，err 會使用之前宣告的那個變數，只是賦予新的值給它。  
-  
-所以若是滿足以下三個條件，使用 := 宣告先前宣告過的變數會變成賦予新值：  
-  
+
+看起來好像是宣告了 `d` 和 `err` 兩個變數。要注意的是，雖然看起來 `err` 好像宣告了兩次，但這是合法的敘述：`err` 在第一個敘述中宣告，而第二個敘述裡只是重新指定了新的值。也就是說在呼叫 `f.Stat` 的時候，`err` 會使用之前宣告的那個變數，只是賦予新的值給它，這主要是雙傳回值裡的 `d` 是新增的宣告；若第二次單獨使用 err 時就必須直接用 `=` 而不再允許使用 `:=`。  
+
+所以若是滿足以下三個條件，使用 `:=` 宣告先前宣告過的變數會變成賦予新值：  
+
 > 必須要在相同的有效範圍 (scope) 內。如果是不同的有效範圍就會變成宣告一個同名的、全新的區域變數 (註)。  
 > 型別要相同。  
 >   
 > := 左邊至少要有一個之前沒有宣告過的變數。  
-  
-這個特性雖然不太常見，但卻很實用。這會讓你簡單地重用相同的 err 變數，這種用法在一長串的 if-else 中特別常見。  
-  
+
+這個特性雖然不太常見，但卻很實用。這會讓你簡單地重用相同的 `err` 變數，這種用法在一長串的 `if`-`else` 中特別常見。  
+
 備註：值得注意的是，在 Go 語言中，函式的參數及回傳值雖然寫在函式大括號的外面，但其實它們跟函式本體屬於同一個有效範圍。  
-  
+
 ## for  
-  
-Go 裡面的 for 跟 C 裡面的有點像又不太像。它把 for 跟 while 整合在一起：因為 Go 沒有 *do-while*。for 有三種形式：  
-  
+
+Go 裡面的 `for` 跟 C 裡面的有點像又不太像。它把 `for` 跟 `while` 整合在一起：因為 Go 沒有 *do-while*。`for` 有三種形式：  
+
 ``` go    
 // Like a C for    
 for init; condition; post { }    
-    
+
 // Like a C while    
 for condition { }    
-    
+
 // Like a C for(;;)    
 for { }    
 ```  
-  
+
 短式宣告讓你可以輕易宣告一個只在迴圈中有效的變數：  
-  
+
 ``` go    
 sum := 0    
 for i := 0; i < 10; i++ {    
     sum += i    
 }    
 ```  
-  
-如果你要遍歷一個 array, slice, string 或是 map，你可以使用 range 語法：  
-  
+
+如果你要遍歷一個 `array`, `slice`, `string` 或是 `map`，你可以使用 `range` 語法：  
+
 ``` go    
 for key, value := range oldMap {    
     newMap[key] = value    
 }    
 ```  
-  
+
 如果只要 key 值的話：  
-  
+
 ``` go    
-for key := range m {    
+for key,_ := range m {    
     if key.expired() {    
         delete(m, key)    
     }    
 }    
 ```  
-  
+
 相反地，不要 key 值的話：  
-  
+
 ``` go    
 sum := 0    
 for _, value := range array {    
     sum += value    
 }    
 ```  
-  
-空識別子 (_) 有很多用法，會在稍後的章節介紹。  
-  
-在遍歷字串 (string) 的時候，for 會幫你做些處理：幫你解析 UTF8，斷字在正確的位元。錯誤的編碼會消耗一個位元組 (byte)，並回傳一個特別的 rune (rune 是 Go 的術語，指的是一個 UTF8 的字元。在 Go 裡有套件專門處理 rune) U+FFFD。以下的程式碼：  
-  
+
+空白識別子 (_) 有很多用法，會在[稍後的章節](#空白識別子)介紹。  
+
+在遍歷字串 (`string`) 的時候，`for` 會幫你做些處理：幫你解析 `UTF8`，斷字在正確的位元。錯誤的編碼會消耗一個位元組 (`byte`)，並回傳一個特別的 `rune` ([rune](#rune) 是 Go 的術語，指的是一個 UTF8 的字元。在 Go 裡有套件專門處理 rune) U+FFFD。以下的程式碼：  
+
 ``` go    
 for pos, char := range "日本\x80語" { // \x80 is an illegal UTF-8 encoding    
     fmt.Printf("character %#U starts at byte position %d\n", char, pos)    
 }    
 ```  
-  
+
 會顯示  
-  
+
 ``` shell    
 character U+65E5 '日' starts at byte position 0    
 character U+672C '本' starts at byte position 3    
 character U+FFFD '�' starts at byte position 6    
 character U+8A9E '語' starts at byte position 7    
 ```  
-  
-最後，Go 沒有逗號這個運算子，而且 ++ 和 -- 是完整的語句而不是敘述的一部份。如果你需要在 for 裡使用多個變數，你可以用多重指定：  
-  
+
+最後，Go 沒有逗號這個運算子，而且 `++` 和 `--` 是完整的語句而不是敘述的一部份。如果你需要在 `for` 裡使用多個變數，你可以用多重指定：  
+
 ``` go    
 // Reverse a    
 for i, j := 0, len(a)-1; i < j; i, j = i+1, j-1 {    
     a[i], a[j] = a[j], a[i]    
 }    
 ```  
-  
+
 ## switch  
-  
-Go 的 switch 比 C 的要泛用。case 敘述比對的值不一定要是常數。case 敘述會依上到下的順序一一比對，直到找到符合的項目。如果 switch 後面沒有東西，那麼就會當成是 switch true。所以你可以 (而且這也是慣例) 把一長串的 if-else if 改寫成 switch：  
-  
+
+Go 的 `switch` 比 C 的要泛用。 `case` 敘述比對的值不一定要是常數。 `case` 敘述會依上到下的順序一一比對，直到找到符合的項目。如果 `switch` 後面沒有東西，那麼就會當成是 `switch` `true` 。所以你可以 (而且這也是慣例) 把一長串的 `if-else` `if` 改寫成 `switch` ：  
+
 ``` go    
 func unhex(c byte) byte {    
     switch {    
@@ -440,9 +447,9 @@ func unhex(c byte) byte {
     return 0    
 }    
 ```  
-  
-不像 C 語言，Go 的 switch 不會跨越到下一個 case 執行，但你可以使用逗號代表「這些值都可以」：  
-  
+
+不像 C 語言，Go 的 `switch` ***不會跨越到下一個 case*** 執行，但你可以使用逗號代表「這些值都可以」：  
+
 ``` go    
 func shouldEscape(c byte) bool {    
     switch c {    
@@ -452,24 +459,24 @@ func shouldEscape(c byte) bool {
     return false    
 }    
 ```  
-  
-雖然在 Go 裡不常用，但你確實可以用 break 跳出 switch，就像在其他類 C 的語言裡一樣。有時候你不止想要跳出 switch，可能想要連外層的 for 迴圈一併跳過，你可以用 break 加標記的方式達成：  
-  
+
+雖然在 Go 裡不常用，但你確實可以用 `break` 跳出 `switch`，就像在其他類 C 的語言裡一樣。有時候你不止想要跳出 `switch`，可能想要連外層的 for 迴圈一併跳過，你可以用 break 加標記的方式達成：  
+
 ``` go    
 Loop:    
 	for n := 0; n < len(src); n += size {    
 		switch {    
 		case src[n] < sizeOne:    
 			if validateOnly {    
-				break    
+				break    // 這邊是跳脫 switch
 			}    
 			size = 1    
 			update(src[n]) 1   
-    
+
 		case src[n] < sizeTwo:    
 			if n+1 >= len(src) {    
 				err = errShortInput    
-				break Loop    
+				break Loop    // 這邊是跳脫 for
 			}    
 			if validateOnly {    
 				break    
@@ -479,11 +486,11 @@ Loop:
 		}    
 	}    
 ```  
-  
-當然，continue 也可以加標記，但只能用在迴圈上。  
-  
-讓我們用一個例子來結束這一節：比對兩個 []byte 是否具有相同的內容  
-  
+
+當然， `continue` 也可以加標記，但只能用在迴圈上。  
+
+讓我們用一個例子來結束這一節：比對兩個 `[]byte` 是否具有相同的內容  
+
 ``` go    
 // Compare returns an integer comparing the two byte slices,  
 // lexicographically.  
@@ -509,7 +516,7 @@ func Compare(a, b []byte) int {
 
 ## 判斷型別的 switch (type switch)
 
-switch 也可以用來判斷動態型別，這會用到型別斷言 (type assertion) 的語法及 type 關鍵字。如果你宣告一個區域變數給它，那麼這個區域變數的型別會和 case 敘述比對的型別相同：
+`switch` 也可以用來判斷動態型別，這會用到型別斷言 (`type assertion`) 的語法及 `type` 關鍵字。如果你宣告一個區域變數給它，那麼這個區域變數的型別會和 `case` 敘述比對的型別相同：
 
 ``` go  
 var t interface{}  
@@ -531,13 +538,13 @@ case *int:
 # 函式
 ## 多重傳回值
 
-Go 有個很不尋常的特性：函式及方法可以回傳多個值。這個特性可以改善一些 C 語言的不良慣例：出錯時回傳負值，並改變某個傳址的參數。
+Go 有個很不尋常的特性: **函式及方法可以回傳多個值**。這個特性可以改善一些 C 語言的不良慣例：出錯時回傳負值，並改變某個傳址的參數。
 
-在 C 語言裡，寫入錯誤會回傳 -1 (寫入了 -1 個位元組，顯然你知道這有問題)，然後把錯誤碼寫進某個傳址進來的參數。在 Go 語言裡，我們會回傳寫入了多少位元組 (這點跟 C 差不多)，同時也回傳錯誤碼：「好，你確實寫了幾 byte 進去，不過不是全部，因為磁碟機滿了」。所以 Go 語言裡的 Write 函式的定義是這樣的：
+在 C 語言裡，寫入錯誤會回傳 -1 (寫入了 -1 個位元組，顯然你知道這有問題)，然後把錯誤碼寫進某個傳址進來的參數。在 Go 語言裡，我們會回傳寫入了多少位元組 (這點跟 C 差不多)，同時也回傳錯誤碼：「好，你確實寫了幾 `byte` 進去，不過不是全部，因為磁碟機滿了」。所以 Go 語言裡的 `Write` 函式的定義是這樣的：
 
 `func (file *File) Write(b []byte) (n int, err error)`
 
-如同說明文件所示，它會回傳已經寫入的位元組數，如果這與 b 的長度不符，err 就會是錯誤碼。你可以在稍後 錯誤處理 的章節看到更多例子。
+如同說明文件所示，它會回傳已經寫入的位元組數，如果這與 `b` 的長度不符， `err` 就會是錯誤碼。你可以在稍後 錯誤處理 的章節看到更多例子。
 
 這樣的形式消除了回傳參考的需求：
 
@@ -551,7 +558,7 @@ func nextInt(b []byte, i int) (int, int) {
     }  
     return x, i  
 }  
-  
+
 for i := 0; i < len(b); {  
     x, i = nextInt(b, i)  
     fmt.Println(x)  
@@ -560,13 +567,13 @@ for i := 0; i < len(b); {
 
 ## 回傳值的預先命名
 
-回傳值可以預先給予名字，這樣就可以在函式內像一般變數那樣地使用它。它們會被初始化為零值，而遇到沒有加上回傳值的 return 語句時，就會把它們傳回去。
+回傳值可以預先給予名字，這樣就可以在函式內像一般變數那樣地使用它。它們會被初始化為零值，而遇到沒有加上回傳值的 `return` 語句時，就會把它們傳回去。
 
-這種寫法不是預設的，但很多時候可以讓你的程式碼清楚不少：這等於在寫說明文件。如果我們把剛剛的 nextInt 函式的回傳值加上命名，你就能一目瞭然地理解哪個 int 是什麼意義：
+這種寫法不是預設的，但很多時候可以讓你的程式碼清楚不少：這等於在寫說明文件。如果我們把剛剛的 `nextInt` 函式的回傳值加上命名，你就能一目瞭然地理解哪個 `int` 是什麼意義：
 
 `func nextInt(b []byte, pos int) (value, nextPos int) {`
 
-因為這些變數會初始化為零值，如果用的好的話可以讓整段程式都簡化許多。以下以 io.ReadFull 做為例子：
+因為這些變數會初始化為零值，如果用的好的話可以讓整段程式都簡化許多。以下以 `io.ReadFull` 做為例子：
 
 ``` go  
 func ReadFull(r Reader, buf []byte) (n int, err error) {  
@@ -582,7 +589,7 @@ func ReadFull(r Reader, buf []byte) (n int, err error) {
 
 ## Defer
 
-defer 語句是把某個函式的呼叫排程在離開目前函式時才執行。這個特性不是很常用，但在某些情況下，比如釋放的資源，會非常有用。典型的例子是釋放同步鎖或是關閉檔案：
+`defer` 語句是把某個函式的呼叫排程在離開目前函式時才執行。這個特性不是很常用，但在某些情況下，比如釋放的資源，會非常有用。典型的例子是釋放同步鎖或是關閉檔案：
 
 ``` go  
 // Contents returns the file's contents as a string.  
@@ -592,7 +599,7 @@ func Contents(filename string) (string, error) {
         return "", err  
     }  
     defer f.Close()  // f.Close will run when we're finished.  
-  
+
     var result []byte  
     buf := make([]byte, 100)  
     for {  
@@ -609,9 +616,11 @@ func Contents(filename string) (string, error) {
 }  
 ```
 
-使用 defer 有兩大好處：首先，你不會因為忘記釋放資源或關閉檔案造成程式錯誤；其次，如果你在開啟檔案之後馬上用 defer 語句來預約關閉檔案，會比在程式結尾關閉檔案更好閱讀。
+使用 `defer` 有兩大好處：
+- 首先，你不會因為忘記釋放資源或關閉檔案造成程式錯誤，例如在稍後編輯函式(增加新的程式碼)，或是在 `Open()` `Close()` 中間增加了 `return` 敘述。
+- 其次，如果你在開啟檔案之後馬上用 `defer` 語句來預約關閉檔案，會比在程式結尾關閉檔案更好閱讀。
 
-使用 defer 時，參數會在你寫下 defer 本身執行的時候就確定它的值，而不是在函式真正執行的時候。所以不用擔心後續的變數操作，同時也表示你可以用一行 defer 來定義數個操作，以下是個不太優雅的例子：
+使用 `defer` 時，參數會在你寫下 `defer` 本身執行的時候就確定它的值，而不是在函式真正執行的時候。所以不用擔心後續的變數操作，同時也表示你可以用一行 `defer` 來定義數個操作，以下是個不太優雅的例子：
 
 ``` go  
 for i := 0; i < 5; i++ {  
@@ -619,12 +628,12 @@ for i := 0; i < 5; i++ {
 }  
 ```
 
-defer 會以相反的順序執行，也就是最先定義的 defer 會最後執行。所以上面的範例最後會印出「4 3 2 1 0」。有個比較可能的例子：用來追蹤函式的執行：
+`defer` 會以相反的順序(LIFO，後進先調用)執行，也就是最先定義的 `defer` 會最後執行。所以上面的範例最後會印出「4 3 2 1 0」。一個更合理的示例是通過程序跟踪函數執行的簡單方法。 我們可以編寫一些簡單的跟踪例程，如下所示:
 
 ``` go  
 func trace(s string)   { fmt.Println("entering:", s) }  
 func untrace(s string) { fmt.Println("leaving:", s) }  
-  
+
 // Use them like this:  
 func a() {  
     trace("a")  
@@ -633,29 +642,29 @@ func a() {
 }  
 ```  
 
-由於在 defer 執行的時候，參數的值便已經確定，我們可以好好利用這個特性：
+由於在 `defer` 執行的時候，參數的值便已經確定(被估值)，我們可以好好利用這個特性撰寫跟蹤函式：
 
 ``` go  
 func trace(s string) string {  
     fmt.Println("entering:", s)  
     return s  
 }  
-  
+
 func un(s string) {  
     fmt.Println("leaving:", s)  
 }  
-  
+
 func a() {  
     defer un(trace("a"))  
     fmt.Println("in a")  
 }  
-  
+
 func b() {  
     defer un(trace("b"))  
     fmt.Println("in b")  
     a()  
 }  
-  
+
 func main() {  
     b()  
 }  
@@ -668,22 +677,19 @@ in b
 entering: a  
 in a  
 leaving: a  
+leaving: b
 ```
 
-leaving: b
-
-對於已經習慣以程式區塊作為資源管理單位的開發者，這樣的行為可能會有點詭異，不過事實上 defer 的資源管理單位是函式，這也是它強大之處。後續在 panic 和 recover 的章節我們會看到 defer 的其他可能性。
-
-譯註：上一段翻譯品質不佳，需要 PR
+對於習慣於使用其他語言進行塊級資源管理的程序員來說，延遲似乎很奇怪，但是它最有趣，功能最強大的應用恰恰是因為它不是基於塊的而是基於函數的。 在後面 [panic](#Panic) 和 [recover](#Recover) 部分，我們將看到其可能性的示例。也就是習慣於循序性區塊式管理程式，遇到 defer() 對應函式的延遲可能不習慣，希望習慣之後會感受到 `defer` 的強大。
 
 # 資料
 ## 用 new 來配置
 
-Go 有兩個配置資源的內建函式：new 和 make。兩者適用於不同的場合，也許看起來有點讓人容易搞混，但其實很簡單。我們先來看 new。雖然它確實會配置記憶體，但不像在其他語言那樣，Go 的 new 函式不會「建構」它 (譯註)，只會填入零值。也就是說，new(T) 配置了一塊記憶體，填入符合 T 型別的零值，然後把位址傳回來。用 Go 的講法，就是回傳一個 T 型別的指標，記憶體內容是零值。
+Go 有兩個配置資源的內建函式： `new` 和 `make`。兩者分別做不同的事也分別適用不同的場合，也許看起來有點讓人容易搞混，但規則很簡單。我們先來看 `new`。雖然它確實會配置記憶體，但不像在其他語言那樣，Go 的 new 函式不會「建構」它, 純配置記憶體但是不做初始化，只會填入零值。也就是說，new(T) 配置了一塊記憶體，填入符合 T 型別的零值，然後把位址傳回來。用 Go 的講法，就是回傳一個 T 型別的指標，記憶體內容是零值。
 
-譯註：原文 but unlike its namesakes in some other languages it does not initialize the memory 中的 initialize 通常翻成「初始化」，但此處語意應該是「不像 C++ 或 Java 那樣會幫你呼叫建構子 (constructor) *處理成員的初始值*」，所以改譯為「建構」。
+後面我們會繼續談 [make](#用 make 來配置)
 
-既然 new 會為你填入零值，你可以把你的資料結構設計成零值就能用，那麼寫起程式來就會方便很多。比如像 bytes.Buffer 的說明文件：the zero value for Buffer is an empty buffer ready to use. (Buffer 的零值就是一個空 buffer 並且可以直接使用)。類似地，sync.Mutex 並沒有建構子，但它的零值就是一個解開 (unlock) 的鎖。
+既然 `new` 會為你填入零值，你可以把你的資料結構設計成零值就能用，那麼寫起程式來就會方便很多。比如像 `bytes.Buffer` 的說明文件： `Buffer` 的零值就是一個空 `buffer` 並且可以直接使用。類似地，`sync.Mutex` 並沒有建構子，但它的零值就是一個解開 (unlock) 的鎖。
 
 這個特性可以一個接一個的擴展下去。考慮下列型別：
 
@@ -694,14 +700,14 @@ type SyncedBuffer struct {
 }  
 ```
 
-這個型只要 new 完或是宣告完就可以馬上使用 (譯註)。以下的程式碼中，p 和 v 都不需要另外再做初始化：
+這個型只要 `new` 完或是宣告完就可以馬上使用 (譯註)。以下的程式碼中，`p` 和 `v` 都不需要另外再做初始化：
 
 ``` go  
 p := new(SyncedBuffer)  // type *SyncedBuffer  
 var v SyncedBuffer      // type  SyncedBuffer  
 ```
 
-譯註：因為 SyncedBuffer 的所有成員都符合這個零值就能使用的特性，所以它本身也可以直接使用。
+譯註：因為 `SyncedBuffer` 的所有成員都符合這個零值就能使用的特性，所以它本身也可以直接使用。
 
 ## 建構子及複合結構的表達式 (literal)
 
@@ -721,7 +727,7 @@ func NewFile(fd int, name string) *File {
 }  
 ```
 
-這寫法真是又臭又長，而我們可以用複合結構表達式來簡化它。複合結構表達式是一段敘述，當執行這段敘述的時候會產生一個實體。
+這寫法真是又臭又長，而我們可以用 *複合結構表達式* 來簡化它。 *複合結構表達式* 是一段敘述，當執行這段敘述的時候會產生一個實體。
 
 ``` go  
 func NewFile(fd int, name string) *File {  
@@ -733,17 +739,18 @@ func NewFile(fd int, name string) *File {
 }  
 ```
 
-有件事值得注意：在 Go 語言中回傳區域變數的位址是很正常的，它不會因為函式結束而被釋放掉。事實上，對複合結構表達式取址的時候，會產生另一個新的實體，所以我們應該把兩行再縮成一行
+*複合結構表達式* 就是用一對大括號 {...} 賦與初始值，在上面就是 `File{....}`  
+有件事值得注意：在 Go 語言中回傳區域變數的位址是很正常的，它不會因為函式結束而被釋放掉。事實上，對複合結構表達式 *取址* 的時候，會產生另一個新的實體，所以我們應該把兩行再縮成一行
 
 `return &File{fd, name, nil, 0}`
 
-當你使用上面那種複合結構表達式的時候，struct 中所有的屬性都必須依順序給予一個值。如果你想省略零值，可以用 label: value 這樣的形式來為非零的屬性賦值。
+當你使用上面那種 *複合結構表達式* 的時候，`struct` 中所有的屬性都必須依順序給予一個值。如果你想省略零值，可以用 `label`: `value` 這樣的形式來為非零的屬性賦值。
 
 `return &File{fd: fd, name: name}`
 
-如果在複合結構表達式中沒有對任何屬性賦值，那麼產生出來的實體就會是零值。也就是說 new(File) 跟 &File{} 是等價的。
+如果在 *複合結構表達式* 中沒有對任何屬性賦值，那麼產生出來的實體就會是零值。也就是說 `new(File)` 跟 `&File{}` 是等價的。
 
-複合結構表達式也可以用來產生 array, slice 或是 map：屬性的標籤是索引 (當然型別必須相符)。
+*複合結構表達式* 也可以用來產生 `array`, `slice` 或是 `map`：屬性的標籤是索引 (當然型別必須相符)。
 
 ``` go  
 a := [...]string   {Enone: "no error", Eio: "Eio", Einval: "invalid argument"}  
@@ -753,42 +760,44 @@ m := map[int]string{Enone: "no error", Eio: "Eio", Einval: "invalid argument"}
 
 ## 用 make 來配置
 
-內建的 make(T, args) 函式雖然也是配置，但與 new(T) 完全不同。它是專門用來配置 slice, map 以及 channel 用的，而且它回傳的會是「初始化」過的 T 型別 (不是 *T 型別，也不是零值)。這三種型別會參考到一些必須要初始化的內部資料結構，所以需要另外處理。像是 slice，其實是一個資料結構，記載了指標 (指向陣列中的資料)，長度和容量。如果這三者沒有被初始化的話
-， slice 就是 nil。所以 make 會初始化 slice, map 和 channel 的內部資料結構以備使用。例如：
+回到配置這議題。 內置函數 `make(T，args)` 的目的不同於 `new(T)`。 `make` 用來創建 `slice`，`map` 和 `channel`，並且返回類型T（不是 *T）的初始化值（非零值）。 區別的原因是，這三種類型在幕後表示了對在使用之前必須初始化的數據結構的引用。 例如，切片是一個三項描述符，其中包含指向數據（指向陣列中的資料），長度和容量的指標，並且在初始化這些項目之前， `slice` 為 `nil`。 對於 `slice`, `map` 和 `channel`，`make` 初始化內部數據結構並準備要使用的值。 例如:
 
 `make([]int, 10, 100)`
 
-會配置一個承載 int 的 slice，長度是 10，最大容量是 100，並且有一個指標指向最前面的 10 個 int。配置 slice 的時候可以省略容量參數，之後在有關 slice 的章節會有更詳細的討論。反過來說，new([]int) 回傳的是一個指標，指向了新配置的，填入零值的 slice 內部結構；也就是一個指向 nil slice 的指標。
+會配置一個承載 `int` 的 `slice`，長度是 10，最大容量是 100，並且有一個指標指向最前面的 10 個 int。配置 `slice` 的時候可以省略容量參數，之後在有關 [slice](#Slice) 的章節會有更詳細的討論。反過來說，`new([]int)` 回傳的是一個指標，指向了新配置的，填入零值的 `slice` 內部結構；也就是一個指向 `nil` `slice` 的指標。
 
-以下說明了 new 和 make 的差別
+以下說明了 `new` 和 `make` 的差別
 
 ``` go  
-var p *[]int = new([]int)       // allocates slice structure; *p == nil; rarely useful  
-var v  []int = make([]int, 100) // the slice v now refers to a new array of 100 ints  
-  
-// Unnecessarily complex:  
+var p *[]int = new([]int)       // 配置 slice 結構; *p == nil; 不是很常用
+var v  []int = make([]int, 100) // slice v 現在參考到一個含有 100 個整數的新 `array`
+
+// 底下是非必要的複雜性用法，先 `new` 再透過 `make` 配置記憶體
 var p *[]int = new([]int)  
 *p = make([]int, 100, 100)  
-  
-// Idiomatic:  
+
+// 底下才是慣用法:
 v := make([]int, 100)  
 ```
 
-要注意的是 make 只能配置 slice, map 或是 channel，而且它回傳的不是指標。如果一定要指標的話，你得用 new 去處理。(譯註：像上面那個例子中，比較複雜的那部份一樣)
+要注意的是 `make` 只能配置 `slice`, `map` 或是 `channel`，而且它回傳的不是指標。如果一定要指標的話，你得用 `new` 去處理。(譯註：像上面那個例子中，比較複雜的那部份一樣)
 
 ## Array
 
-譯註：array 通常譯為陣列，但在 Go 語言中，array 十分容易與 slice (通常譯為片段)搞混。兩者在 Go 語言中的意涵與其他語言不大相同，可以算是專有名詞，故以下都不做翻譯，藉此提升讀者對這兩個名詞的熟悉度。而「陣列」一詞則會泛指類 C 語言中的陣列的行為。
+譯註： `array` 通常譯為陣列，但在 Go 語言中， `array` 十分容易與 `slice` (通常譯為片段)搞混。兩者在 Go 語言中的意涵與其他語言不大相同，可以算是專有名詞，故以下都不做翻譯，藉此提升讀者對這兩個名詞的熟悉度。而「陣列」一詞則會泛指類 C 語言中的陣列的行為。
 
-Array 在規劃記憶體的時候相當實用，有時候還可以用來避免不必要的資源配置動作。不過它最主要的功能還是做為 slice 的基底，slice 在下一節會討論。做為 slice 的先備知識，這裡提出一些 array 的特點。
+`Array` 在規劃記憶體的時候相當實用，有時候還可以用來避免不必要的資源配置動作。不過它最主要的功能還是做為 `slice` 的基底， `slice` 在下一節會討論。做為 `slice` 的先備知識，這裡提出一些 `array` 的特點。
 
-Array 在 Go 和 C 語言之間有些重大的不同：
+`Array` 在 Go 和 C 語言之間有些重大的不同：
 
-    Go 語言的 array 是單純的值。把 array 指定給變數的時候會複製一份副本。
-    同樣的，把 array 當成參數傳入函式的時候，函式內收到的會是副本。
-    array 的長度是型別的一部份，也就是說 [10]int 和 [20]int 屬於不同型別。
+- Go 語言的 `array` 是單純的值。把 `array` 指定給變數的時候會複製一份副本。  
+  C 中的 `array` 是指標，直接指定 `array` 的話，是指標的複製，而非內容的副本。
+- 特別的，把 `array` 當成參數傳入函式的時候，函式內收到的會是副本。  
+  這意味著在函式內修改 `array` 的內容不會影響外面呼叫者的 `array` 實體。
+- `array` 的長度是 `array` 型別的一部份，也就是說 `[10]int` 和 `[20]int` 屬於不同型別。  
+  這就意味著 go 的 `array` 真的跟 C 的 `array` 完全不是同一回事兒。
 
-Array 是值這件事有時候很有用，有時候卻代價高昂。如果你需要類似 C 語言陣列那樣的行為，你可以用指標：
+`Array` 是值而不是指標這件事有時候很有用，有時候卻代價高昂。如果你需要類似 C 語言陣列那樣的行為，你可以用指標：
 
 ``` go  
 func Sum(a *[3]float64) (sum float64) {  
@@ -797,7 +806,7 @@ func Sum(a *[3]float64) (sum float64) {
     }  
     return  
 }  
-  
+
 array := [...]float64{7.0, 8.5, 9.1}  
 x := Sum(&array)  // Note the explicit address-of operator  
 ```
@@ -926,7 +935,7 @@ attended := map[string]bool{
     "Joe": true,  
     ...  
 }  
-  
+
 if attended[person] { // will be false if person is not in the map  
     fmt.Println(person, "was at the meeting")  
 }  
@@ -1049,7 +1058,7 @@ fmt.Printf("%v\n", t)
 
 ``` go  
 type MyString string  
-  
+
 func (m MyString) String() string {  
     return fmt.Sprintf("MyString=%s", m) // Error: will recur forever.  
 }  
@@ -1096,49 +1105,49 @@ func Min(a ...int) int {
     return min    
 }    
 ```  
-  
+
 ## Append  
-  
+
 現在我們已經準備好要解決 append 函式最後的謎團。內建的 append 函式的定義和上面我們自訂的 Append 函式不一樣。概念上，append 的定義可以說是  
-  
+
 `func append(slice []T, elements ...T) []T`  
-  
+
 T 只是一個記號，代表了你想要的型別。但這不是正確的 Go 語法。函式的定義裡，所有的型別都要是確定的，不能在呼叫時隨著需要改變。這就是我們內建 append 函式的原因：這件事需要編譯器來處理。  
-  
+
 append 函式會把傳進來的參數加到 slice 的後面然後傳回去。之所以要把 slice 回傳的原因在之前已經提過：它會更動內部的資料結構。以下這個簡單的範例  
-  
+
 ``` go    
 x := []int{1,2,3}    
 x = append(x, 4, 5, 6)    
 fmt.Println(x)    
 ```  
-  
+
 會輸出 [1 2 3 4 5 6]。你應該會發現這點跟 Printf 很像，都可以接受任意數量的參數。  
-  
+
 那如果我們把一個 slice 裡的所有元素依序加到另一個 slice 的後面呢？很簡單，就用我們剛剛才提到的 ...。所以下面這段程式碼和上面的例子會有一樣的結果：  
-  
+
 ``` go    
 x := []int{1,2,3}    
 y := []int{4,5,6}    
 x = append(x, y...)    
 fmt.Println(x)    
 ```  
-  
+
 如果沒有 ... 的話就會發生編譯錯誤，因為 y 的型別是 []int 而不是 int。  
-  
+
 # 初始化  
-  
+
 雖然 Go 語言的初始化看起來跟 C/C++ 的差別不大，但事實上它強大多了。初始化的時候可以建立複雜的結構，在物件之間，甚至是套件之間的順序問題也能正確的解決。  
 
 ## 常數  
-  
+
 在 Go 語言裡，常數就是個常數。不論是全域的還是區域的，它們在編譯的時候就已經產生好了，型別也只能是數值、字元、rune、字串或是 bool。因為編譯時期的限制，定義常數只能用靜態表達式，而編譯器會執行這些表達式。舉例來說， 1<<3 是靜態表達式，但 math.Sin(math.Pi/4) 則不是：因為要到執行的時候才會做函式呼叫。  
-  
+
 一系列的常數可以用 iota 運算元來定義。iota 可以是敘述的一部份，而敘述可以省略，所以定義起來很省事：  
-  
+
 ``` go    
 type ByteSize float64    
-    
+
 const (    
     _           = iota // ignore first value by assigning to blank identifier    
     KB ByteSize = 1 << (10 * iota)    
@@ -1151,9 +1160,9 @@ const (
     YB    
 )    
 ```  
-  
+
 由於你可以為任何自訂型別加上自訂的方法，所以透過加上 String 方法，我們就可以讓常數有個漂亮的預設格式。這個技巧對於單純的數值型別也很有用，比如原本是浮點數的 ByteSize 型別。  
-  
+
 ``` go    
 func (b ByteSize) String() string {    
     switch {    
@@ -1177,15 +1186,15 @@ func (b ByteSize) String() string {
     return fmt.Sprintf("%.2fB", b)    
 }    
 ```  
-  
+
 這樣 YB 會輸出 1.00YB，而 ByteSize(1e13) 則是 9.09TB。  
-  
+
 這段程式碼不會造成無限遞迴，因為 %f 不會呼叫到 String - 它接受的是浮點數而非字串。  
 
 ## 變數  
-  
+
 變數也可以初始化，而且可以使用一般的敘述。  
-  
+
 ``` go    
 var (    
     home   = os.Getenv("HOME")    
@@ -1193,13 +1202,13 @@ var (
     gopath = os.Getenv("GOPATH")    
 )    
 ```  
-  
+
 ## init 函式  
-  
+
 最後，每個源碼檔都可以定義自己的 init 函式，這個函式不接受任何參數。事實上，每個源碼檔可以有複數個 init 函式。init 是整個初始化環節的最後一步：要等到套件中為變數初始化的敘述都執行完，而且 import 進來的套件也初始化完畢之後，才會執行 init。  
-  
+
 除了進行一些無法簡單地用敘述完成的初始化工作之外，另外一種常見的用法是在 init 裡確認套件的狀態，或在必要時進行修復  
-  
+
 ``` go    
 func init() {    
     if user == "" {    
@@ -1215,24 +1224,24 @@ func init() {
     flag.StringVar(&gopath, "gopath", gopath, "override default GOPATH")    
 }    
 ```  
-  
+
 # 方法  
 ## 指標與值  
-  
+
 回想一下我們先前提過的 ByteSize，我們可以為任何型別定義方法 (除了指標型別或是介面型別)；接收器不一定要是 struct。  
-  
+
 先前討論 slice 的時候，我們寫了一個 Append 函式作為範例。現在我們要試著把它改寫成 slice 的一個方法。首先，我們得要定義一個有命名的型別，這樣才能為它加上方法。至於方法的接收器，當然是我們剛定義的型別了。  
-  
+
 ``` go    
 type ByteSlice []byte    
-    
+
 func (slice ByteSlice) Append(data []byte) []byte {    
     // Body exactly the same as above    
 }    
 ```  
-  
+
 這樣還是得回傳一個新的 slice 回去，我們可以把接收器改成指標，那麼我們就可以在方法裡改變 slice。  
-  
+
 ``` go    
 func (p *ByteSlice) Append(data []byte) {    
     slice := *p    
@@ -1240,9 +1249,9 @@ func (p *ByteSlice) Append(data []byte) {
     *p = slice    
 }    
 ```  
-  
+
 這樣就完美了嗎？其實還可以寫得更好。如果我們把方法的定義改成像標準的 Write 方法的話：  
-  
+
 ``` go    
 func (p *ByteSlice) Write(data []byte) (n int, err error) {    
     slice := *p    
@@ -1251,30 +1260,30 @@ func (p *ByteSlice) Write(data []byte) (n int, err error) {
     return len(data), nil    
 }    
 ```  
-  
+
 那麼 *ByteSlice 這個型別就滿足了 io.Writer 這個介面的要求 (譯註：就是實作了這個介面的意思), 這下可有趣了。比如說，現在我們可以把 *ByteSlice 當成串流來寫入。  
-  
+
 ``` go    
 var b ByteSlice    
 fmt.Fprintf(&b, "This hour has %d days\n", 7)    
 ```  
-  
+
 注意那個取址符號，因為只有 *ByteSlice 型別實作了 io.Writer。如果你的接收器是接收值的，那麼實體不論是值型別 (T) 還是指標型別 (*T)，都可以呼叫這個方法；當接收器是接收指標的時候，只有在指標型別裡才有定義這個方法。  
-  
+
 這個規則是因為用指標型別的話就可以修改原本的實體，然而 Go 在傳遞值的時候會產生副本，這代表你在方法中做的變更其實都改到副本上。所以我們直接在語言層面上杜絕發生這種錯誤的可能。對於接收指標的方法，如果呼叫的時候需要而且可以取址，那麼 Go 會幫你自動加上取址符號。比如上面的例子，我們可以直接寫 b.Write，而 Go 會幫我們把它改成 (&b).Write。  
-  
+
 題外話，上面那個改寫成 Write 的主意就是我們在實作 bytes.Buffer 時的中心思想。  
-  
+
 # 介面以及其他型別  
 ## 介面  
-  
+
 在 Go 語言中，介面是用來指定物件的行為：如果某個物件可以做「這件事」，那麼它就可以用來當成是「這種東西」。先前我們已經看到好幾個簡單的例子：我們可以透過 String 方法來實作自訂的輸出，而 Fprintf 可以輸出到任何有實作 Write 方法的物件裡。  
-  
+
 一個型別可以實作好幾個介面。舉例來說，一個 collection 可以藉由實作 sort.Interface 這個介面來讓 sort 套件為它排序，同時也可以提供一個自訂的輸出格式：  
-  
+
 ``` go    
 type Sequence []int  
-  
+
 // Methods required by sort.Interface.  
 func (s Sequence) Len() int {  
     return len(s)  
@@ -1285,7 +1294,7 @@ func (s Sequence) Less(i, j int) bool {
 func (s Sequence) Swap(i, j int) {  
     s[i], s[j] = s[j], s[i]  
 }  
-  
+
 // Method for printing - sorts the elements before printing.  
 func (s Sequence) String() string {  
     sort.Sort(s)  
@@ -1317,7 +1326,7 @@ func (s Sequence) String() string {
 
 ``` go  
 type Sequence []int  
-  
+
 // Method for printing - sorts the elements before printing  
 func (s Sequence) String() string {  
     sort.IntSlice(s).Sort()  
@@ -1335,7 +1344,7 @@ func (s Sequence) String() string {
 type Stringer interface {  
     String() string  
 }  
-  
+
 var value interface{} // Value provided by caller.  
 switch str := value.(type) {  
 case string:  
@@ -1394,7 +1403,7 @@ type Block interface {
     Encrypt(src, dst []byte)  
     Decrypt(src, dst []byte)  
 }  
-  
+
 type Stream interface {  
     XORKeyStream(dst, src []byte)  
 }  
@@ -1431,7 +1440,7 @@ ResponseWriter 本身就是個介面，提供一些方法讓你可以回應 HTTP
 type Counter struct {  
     n int  
 }  
-  
+
 func (ctr *Counter) ServeHTTP(w http.ResponseWriter, req *http.Request) {  
     ctr.n++  
     fmt.Fprintf(w, "counter = %d\n", ctr.n)  
@@ -1546,14 +1555,14 @@ if fi.IsDir() {
 
 ``` go  
 package main  
-  
+
 import (  
     "fmt"  
     "io"  
     "log"  
     "os"  
 )  
-  
+
 func main() {  
     fd, err := os.Open("test.go")  
     if err != nil {  
@@ -2209,8 +2218,8 @@ const templateStr = `
 <br>
 {{end}}
 <form action="/" name=f method="GET">
-    <input maxLength=1024 size=70 name=s value="" title="Text to QR Encode">
-    <input type=submit value="Show QR" name=qr>
+  <input maxLength=1024 size=70 name=s value="" title="Text to QR Encode">
+  <input type=submit value="Show QR" name=qr>
 </form>
 </body>
 </html>
@@ -2233,3 +2242,4 @@ html/template 套件是一個強大的樣版引擎，而我們現在只用到一
 
 [gofmt]: https://golang.org/cmd/gofmt/
 [godoc]: https://godoc.org/golang.org/x/tools/cmd/godoc
+[rune]: https://blog.golang.org/strings
