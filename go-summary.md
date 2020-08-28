@@ -151,3 +151,29 @@ func main() {
 }
 ```
 
+# Modules
+
+自 golang 1.11 版本開始，支援模組化的套件相依管理方法，這邊就簡單介紹一下。  
+
+## 目錄結構
+
+先來說說 GOPATH 是可以依套件而變的，通常在 ${GOPATH}/ 會有 src/ 及 pkg/
+一般預設值會是 $HOME/go 
+
+如果為了讓各套件具備更加獨立且完整性來看，應該在將 GOPATH 設為套件的目錄。  
+也就是說我們的套件目錄等於 ${GOPATH}, 而源碼會放在 src/，其相依性則放在 pkg/  
+
+但是這個並不是天生自然的結構，需要自己操作:  
+- export GOPATH=$(pwd)  # 當然要先切換目錄至你想要的套件目錄處
+- mkdir -p src pkg
+- .....  DO SOMETHING .....  
+  將源碼放在 src/，此套件若還要細分子目錄，千萬不要使用 src/ 的目錄名，這是 golang 的不成文規定  
+  此時的工作目錄應該切換至 src/  
+- 要特別注意的是， golang src/ 中的源碼，其 package 一樣採用 `package main` 即可  
+- 進行編譯測試之前，要先建立 mod 資訊(工作目錄在 ${GOPATH}/src/):  
+  go mod init 套件名   # 例如 go mod init utils
+- 編譯可採用 go build 或 go get  
+  可以在 ${GOPATH}/bin 目錄下看到編譯好的執行檔(utils)
+
+以上要特別注意執行 go mod init 的目錄是在 $GOPATH/src/,   
+編譯出來的檔案則在 $GOPATH/bin/
