@@ -46,5 +46,29 @@ real    0m2.245s
 ```
 
 注意到，因為 goroutine 並發特性，整體時間只有2秒，而不是1+2秒
+還注意到 select 跟 switch 都用 case, 但是兩者用途完全不同，  
+select 只能用在通道上，它還可以相同的 case, 此時只會隨機使用:
+
+```go
+package main
+import ("fmt")
+
+func main() {
+    ch := make(chan int, 1)
+
+    for i:=0; i<10; i++ {
+	ch<- 1
+    	select {
+    	case <-ch:
+    	    fmt.Println("random 01")
+    	case <-ch:
+    	    fmt.Println("random 02")
+    	}
+    }
+}
+```
+上例結果會不固定
+
+在下例 timeouts 中可以看到讓通道 select 阻斷逾時的方法
 
 下一範例: [Timeouts](timeouts.md)
