@@ -44,4 +44,4 @@ Timer 2 stopped
 ```
 啟動程序後，第一個計時器將觸發約2秒，但第二個計時器將在有機會觸發之前停止運行。  
 
-下一範例: [Timers](timers.md)
+下一範例: [Tickers](tickers.md)
