@@ -18,6 +18,7 @@ import (
 func main() {
     // 我們將使用無符號整數表示我們的（始終為正）計數器。
     var ops uint64
+    a := int64(0)
     // WaitGroup將幫助我們等待所有goroutine完成他們的工作。
     var wg sync.WaitGroup
 
@@ -30,6 +31,7 @@ func main() {
         go func() {
             for c := 0; c < 1000; c++ {
                 atomic.AddUint64(&ops, 1)
+                a++
             }
             wg.Done()
         }()
@@ -40,14 +42,14 @@ func main() {
     // 現在可以安全訪問 ops，
     // 因為我們知道沒有其他goroutine正在對其進行寫入。
     // 使用atomic.LoadUint64之類的功能，還可以在原子更新時安全地讀取原子。
-    fmt.Println("ops:", ops)
+    fmt.Println("ops:", ops, "a:", a)
 }
 ```
 [執行](http://play.golang.org/p/j-14agntvEO)
 
 ``` shell
 $ go run atomic-counters.go
-ops: 50000
+ops: 50000 a: 17345
 ```
 
 我們預計將獲得50,000次作業。   
@@ -56,6 +58,8 @@ ops: 50000
 
 也就是把 atomic.AddUint64(&ops, 1) 替換成 ops++  
 這樣的執行結果每次都有可能不同，而且可以發現都小於 50000  
+後來我補充了 a++, 證實只有原子計數器達到預期，a 的值如上述會變化
+主要是因為 goroutine 發生時機並無順序可言，因此非原子計數器的其他變數就會出現在執行 goroutine 時，其 變數值是舊的，所以改變它並無法得到預期的值。
 
 此外，使用-race標誌運行時，我們會遇到數據爭用失敗的情況。
 
