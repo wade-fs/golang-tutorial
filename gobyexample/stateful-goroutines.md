@@ -1,5 +1,6 @@
 # [Go by Example](../gobyexample.md): Stateful Goroutines
 
+在前面的示例中，我們使用了具有互斥鎖的顯式鎖定，以跨多個goroutine同步對共享狀態的訪問。 另一種選擇是使用goroutine和通道的內置同步功能來實現相同的結果。 這種基於通道的方法與Go共享記憶體的想法保持了一致，該想法是通過通信並使每個數據完全由1個goroutine擁有。
 
 ``` go
 package main

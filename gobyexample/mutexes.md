@@ -1,7 +1,9 @@
-# [Go by Example](../gobyexample.md): Mutexes
+# [Go by Example](../gobyexample.md): Stateful Goroutines
 
-在前面的示例中，我們看到瞭如何使用[原子操作](atomic-counters.md)來管理簡單的計數器狀態。  
-對於更複雜的狀態，我們可以使用Mutex(互斥鎖)安全地跨多個 *goroutine* 訪問數據。
+
+在前面的示例中，我們使用了具有[互斥鎖](mutexes.md)的顯式鎖定，以跨多個goroutines同步對共享狀態的訪問。   
+另一種選擇是使用goroutine和通道的內置同步功能來實現相同的結果。 這種基於通道的方法與Go共享內存的想法保持了一致，該想法是通過通信並使每個數據完全由1個goroutine擁有。
+
 
 ``` go
 package main
@@ -9,81 +11,91 @@ package main
 import (
     "fmt"
     "math/rand"
-    "sync"
     "sync/atomic"
     "time"
 )
 
+type readOp struct {	// 在此示例中，我們的狀態將歸於一個goroutine。
+    key  int 		// 這將確保並發訪問不會破壞數據。
+    resp chan int 	// 為了讀取或寫入該狀態，
+}			// 其他goroutine將向擁有的goroutine發送消息並接收相應的回復。
+type writeOp struct { 	// 這些readOp和writeOp結構封裝了
+    key  int		// 這些請求以及擁有的goroutine進行響應的方式。
+    val  int
+    resp chan bool
+}
+
 func main() {
-    // 本範例中 state 是個 map
-    var state = make(map[int]int)
 
-    // 互斥鎖 mutex 會同步存取 state
-    var mutex = &sync.Mutex{}
+    var readOps uint64	// 如前面的示例, 
+    var writeOps uint64	// 我們需要計算執行的操作數
 
-    // 我們將跟踪我們進行了多少次讀寫操作。
-    var readOps uint64
-    var writeOps uint64
+    reads := make(chan readOp)	// 讀寫通道將其他 goroutines 
+    writes := make(chan writeOp)// 用於發出讀取和寫入請求
 
-    // 在這裡，我們啟動100個goroutine，以對該狀態執行重複讀取，
-    // 每個goroutine中每毫秒執行一次。
-    for r := 0; r < 100; r++ {
+    go func() {					// 這是有狀態的 goroutine(數量1個)
+        var state = make(map[int]int)		// 基本上跟上一例一樣資料結構
+        for {					// 但是現在是有狀態 goroutine內的資料
+            select {				// 此 goroutine 不斷從讀寫通道中選擇
+            case read := <-reads:		// 據此響應讀取
+                read.resp <- state[read.key]	//   在響應通道 resp 發送值來指示成功
+            case write := <-writes:		// 與寫入請求的到達
+                state[write.key] = write.val	//   在響應通道 resp 發送值來指示成功
+                write.resp <- true		// 讀取的 resp 響應為其期望值
+            }
+        }
+    }()
+
+    for r := 0; r < 100; r++ {			// 這將啟動100個goroutine，
         go func() {
-            total := 0
             for {
-                // 對於每次讀取，我們選擇一個要訪問的鍵，
-                // Lock()用來鎖住互斥鎖以確保對狀態的獨占訪問，讀取所選鍵的值，
-                // Unlock()解開互斥鎖，並增加readOps原子計數值。
-                key := rand.Intn(5)
-                mutex.Lock()
-                total += state[key]
-                mutex.Unlock()
-                atomic.AddUint64(&readOps, 1)
-                // 在讀取之間稍等片刻
-                time.Sleep(time.Millisecond)
+                read := readOp{			// 以通過reads通道向擁有狀態的goroutine發出讀取。
+                    key:  rand.Intn(5),		// 每次讀取都需要構造一個readOp，
+                    resp: make(chan int)}	//
+                reads <- read			// 通過讀取通道發送它，
+                <-read.resp			// 並通過提供的resp通道接收結果。
+                atomic.AddUint64(&readOps, 1)	// 以原子計數器確保數量沒有因為並發消失
+                time.Sleep(time.Millisecond)	// 短暫的睡眠用來感覺有在工作
             }
         }()
     }
-    // 我們還將使用與讀取相同的模式，啟動10個goroutine來模擬寫入。
-    for w := 0; w < 10; w++ {
-        go func() {
+
+    for w := 0; w < 10; w++ {			// 同上，這邊是寫入
+        go func() {				// 對於讀/寫我們是分別對待
             for {
-                key := rand.Intn(5)
-                val := rand.Intn(100)
-                mutex.Lock()
-                state[key] = val
-                mutex.Unlock()
+                write := writeOp{
+                    key:  rand.Intn(5),
+                    val:  rand.Intn(100),
+                    resp: make(chan bool)}
+                writes <- write
+                <-write.resp
                 atomic.AddUint64(&writeOps, 1)
                 time.Sleep(time.Millisecond)
             }
         }()
     }
-    // 等待1秒來讓10個goroutine在狀態和互斥量上工作一秒鐘
-    time.Sleep(time.Second)
 
-    // 取得最後作業計數並報告
-    readOpsFinal := atomic.LoadUint64(&readOps)
+    time.Sleep(time.Second)			// 同理，假裝系統忙碌了一秒鐘
+
+    readOpsFinal := atomic.LoadUint64(&readOps)	// 最後捕捉並報告作業數
     fmt.Println("readOps:", readOpsFinal)
     writeOpsFinal := atomic.LoadUint64(&writeOps)
     fmt.Println("writeOps:", writeOpsFinal)
-
-    // 最終鎖定狀態，說明它結束值(如何結束)
-    mutex.Lock()
-    fmt.Println("state:", state)
-    mutex.Unlock()
 }
 ```
-[執行](http://play.golang.org/p/0WEmOOjoCjp)
+[執行](http://play.golang.org/p/5mf_P9xqBzk)
 
 ``` shell
-$ go run mutexes.go
-readOps: 83285
-writeOps: 8320
-state: map[1:97 4:53 0:33 2:15 3:2]
-```
+$ go run stateful-goroutines.go
+readOps: 71708			// 每個並發讀取作業約 1ms, 所以 100 個在一秒內應該有 10萬個
+writeOps: 7177			// 寫入 10 個並發，應該有 1萬個
+```				// 但是系統總是還在忙別的事，所以實際數量會較少
 
-運行該程序表明，在互斥鎖同步狀態下，我們總共執行了約90,000次操作。  
+對於這種特殊情況，基於goroutine的方法比基於互斥體的方法要複雜得多。  
+但是，在某些情況下它可能很有用:
+例如，當您涉及其他通道時，或者在管理多個此類互斥鎖時，都容易出錯。   
+您應該使用最自然的方法，尤其是在理解程序的正確性方面。
 
-接下來，我們將研究僅使用 [goroutine](goroutines.md) 和 [通道](channels.md) 來實現相同的狀態管理任務。
+因為並發是重要課題，我們可以轉往[進階並發](advanced-parallel.md)或是新課題，[排序](sorting.md)
 
-下一範例: [Stateful Goroutines](stateful-goroutines.md)
+下一範例: [排序](sorting.md)
