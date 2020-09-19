@@ -17,6 +17,7 @@
 -   [Go 教學習練](https://github.com/davidhoo/go-tour)
 -   [從Go看現代程式語言](http://www.ithome.com.tw/voice/99698)
 -   [Golang Web 程式設計](https://blog.kdchang.cc/2017/07/02/golang101-tutorial-web-basic/)
+-   [一般工作示例碼](https://yourbasic.org/golang/blueprint/)
 
 # 額外:
 - [Markdown](markdown.md)  
