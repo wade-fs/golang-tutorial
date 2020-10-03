@@ -1,7 +1,9 @@
 # [Go by Example](../gobyexample.md): Testing
 
-單元測試是依Go原則編寫程序的重要組成部分。 測試包提供了編寫單元測試所需的工具，而go test命令則運行測試。  
-為了演示起見，此代碼位於main包中，實際運用上測試檔可以是任何包。 測試代碼通常與所測試的代碼位於同一包中。
+單元測試是依Go原則編寫程序的重要組成部分。  
+測試包提供了編寫單元測試所需的工具，而go test命令則運行測試。  
+為了演示起見，此代碼位於main包中，實際運用上測試檔可以是任何包。  
+測試代碼通常與所測試的代碼位於同一包中。
 
 ``` go
 package main
@@ -21,7 +23,6 @@ func IntMin(a, b int) int {	// 這邊先實作一個小函式，通常這個函�
 func TestIntMinBasic(t *testing.T) {	// 跟測試檔名相反的，以 Test開頭會被自動調用進行測試
     ans := IntMin(2, -2)		// t 含有很多工具，像這邊的 t.Errorf()
     if ans != -2 {
-
         t.Errorf("IntMin(2, -2) = %d; want -2", ans)
     }
 }
