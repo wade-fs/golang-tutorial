@@ -49,4 +49,4 @@ go 的 `array` 類似常數，無法更動長度, 甚至也不是像 C/C+ 一樣
 因此常見的傳進函式後的更動，返回後 `array` 的值不會被更動。  
 建議與 [Slice](slice.md)一起看，會有更多說明  
 
-下一範例: [Slice](slice.md)
+下一範例: [Slices](slices.md)
